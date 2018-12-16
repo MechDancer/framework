@@ -10,7 +10,7 @@ import org.mechdancer.remote.resources.UdpCmd
  */
 class CommonUdpServer(
     private val received: (String, ByteArray) -> Unit
-) : UniqueComponent<CommonUdpServer>(),    MulticastListener {
+) : UniqueComponent<CommonUdpServer>(), MulticastListener {
 
     override val interest = INTEREST
 
