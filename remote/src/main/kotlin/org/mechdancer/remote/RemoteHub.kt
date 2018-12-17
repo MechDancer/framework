@@ -1,5 +1,6 @@
 package org.mechdancer.remote
 
+import org.mechdancer.dependency.Component
 import org.mechdancer.dependency.plusAssign
 import org.mechdancer.dependency.scope
 import org.mechdancer.remote.modules.group.GroupMonitor
@@ -23,7 +24,7 @@ class RemoteHub(
     address: InetSocketAddress,
     sliceSize: Int,
     newMemberDetected: (String) -> Unit,
-    additional: Iterable<org.mechdancer.dependency.Component>
+    additional: Iterable<Component>
 ) {
     // UDP 依赖项
 

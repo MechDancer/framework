@@ -1,18 +1,19 @@
 package org.mechdancer.remote
 
+import org.mechdancer.dependency.Component
 import java.net.InetAddress
 import java.net.InetSocketAddress
 
 /** 远程终端构建器 */
 class RemoteDsl private constructor() {
     private var newMemberDetected: (String) -> Unit = {}
-    private var dependencies = mutableListOf<org.mechdancer.dependency.Component>()
+    private var dependencies = mutableListOf<Component>()
 
     fun newMemberDetected(block: (String) -> Unit) {
         newMemberDetected = block
     }
 
-    fun inAddition(block: () -> org.mechdancer.dependency.Component) {
+    fun inAddition(block: () -> Component) {
         dependencies.add(block())
     }
 
