@@ -1,4 +1,4 @@
-package org.mechdancer.remote
+package org.mechdancer.remote.presets
 
 import org.mechdancer.dependency.Component
 import org.mechdancer.dependency.plusAssign
