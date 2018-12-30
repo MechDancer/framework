@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream
 fun main(args: Array<String>) {
     val struct = StructMonitor()
     for (value in BasicStruct.values()) {
-        struct.add(value.description)
+        struct.add(value.encode)
     }
 
     struct.add(
@@ -19,5 +19,5 @@ fun main(args: Array<String>) {
         .buildDescription("vector2D")
         .also { println(it.joinToString(" ")) }
         .let { struct.analysis(ByteArrayInputStream(it)) }
-        .let(::println)
+        .let { (topic, bytes) -> println("$topic: byte[${bytes.size}]") }
 }

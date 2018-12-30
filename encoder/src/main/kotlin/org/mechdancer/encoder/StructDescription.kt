@@ -12,7 +12,7 @@ data class StructDescription(
     val name: String,
     val fields: List<Pair<String, FieldType>>
 ) {
-    // 描述符输出到流
+    /** 向[stream]写入结构描述 */
     fun writeTo(stream: OutputStream) {
         stream.writeEnd(name)
         for ((name, type) in fields) {
@@ -26,6 +26,7 @@ data class StructDescription(
     override fun hashCode() = name.hashCode()
 
     companion object {
+        /** 从[stream]读取结构描述 */
         fun readFrom(stream: InputStream) =
             StructDescription(
                 stream.readEnd(),
@@ -33,7 +34,7 @@ data class StructDescription(
                     stream
                         .readEnd()
                         .takeIf(String::isNotBlank)
-                        ?.let { sub -> sub to FieldType.values().first { it.id == stream.read() } }
+                        ?.let { sub -> sub to FieldType.map[stream.read()]!! }
                 }.toList()
             )
     }

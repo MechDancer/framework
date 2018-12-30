@@ -41,13 +41,14 @@ class StructMonitor {
         lock.write { core[struct.name] = struct }
 
     /** 分析结构描述并添加 */
-    fun analysis(stream: InputStream): String {
-        val count = stream.zigzag(false).toInt()
-        if (count == 0) return stream.readEnd()
-        val list = List(count) { StructDescription.readFrom(stream) }
-        lock.write { list.forEach { core[it.name] = it } }
-        return list[0].name
-    }
+    fun analysis(stream: InputStream) =
+        when (val count = stream.zigzag(false).toInt()) {
+            0    -> stream.readEnd()
+            else -> List(count) { StructDescription.readFrom(stream) }
+                .also { list -> lock.write { for (it in list) core[it.name] = it } }
+                .first()
+                .name
+        } to stream.readBytes()
 
     // 递归构造无环路的依赖集合
     private fun addDependenciesTo(

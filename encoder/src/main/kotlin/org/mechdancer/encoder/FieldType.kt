@@ -5,5 +5,9 @@ package org.mechdancer.encoder
  * @param id 标记类型的字节
  */
 enum class FieldType(val id: Int) {
-    Unit(1), Array(2)
+    Unit(1), Array(2);
+
+    companion object {
+        val map = values().associate { it.id to it }
+    }
 }
