@@ -8,14 +8,16 @@ import kotlin.concurrent.thread
 fun main() {
     val probe = Probe()
     thread { while (true) probe() }
-
     while (true) {
         readLine()
-        println(SimpleDateFormat("HH:mm:ss:SSS").format(Date()))
+        println(format(System.currentTimeMillis()))
         for ((name, info) in probe.view) {
             val (time, address) = info
-            println("$name: $time, $address")
+            println("$name: ${format(time)}, $address")
         }
         println("___")
     }
 }
+
+private fun format(time: Long) =
+    SimpleDateFormat("HH:mm:ss:SSS").format(Date(time))

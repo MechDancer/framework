@@ -79,6 +79,8 @@ fun main() {
     hub.connect("receiver", TcpCmd.Mail) { it say ("hello".toByteArray()) }
     hub.connect("receiver", Cmd.X) { it say ("hello".toByteArray()) }
     hub.broadcast(Cmd.X, "hello".toByteArray())
+
+    readLine()
 }
 
-fun log(info: Any?) = if (DEBUG) println(info) else Unit
+private fun log(info: Any?) = if (DEBUG) println(info) else Unit
