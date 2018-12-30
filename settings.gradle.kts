@@ -1,1 +1,1 @@
-include("dependency", "remote")
+include("dependency", "remote", "encoder")

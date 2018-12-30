@@ -5,11 +5,11 @@ apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.1.0-rc-1"
+version = "0.0.1-dev-1"
 
 dependencies {
     compile(kotlin("stdlib"))
-    compile(kotlin("reflect"))
+    compile(project(":dependency"))
 }
 
 task<Jar>("sourcesJar") {
@@ -20,10 +20,10 @@ task<Jar>("sourcesJar") {
 configure<PublishExtension> {
     userOrg = "mechdancer"
     groupId = "org.mechdancer"
-    artifactId = "dependency"
+    artifactId = "encoder"
     publishVersion = version.toString()
-    desc = "dependency management for mechdancer framework"
-    website = "https://github.com/MechDancer/framework/dependency"
+    desc = "encoder"
+    website = "https://github.com/MechDancer/framework/encoder"
     setLicences("WTFPL")
 }
 
