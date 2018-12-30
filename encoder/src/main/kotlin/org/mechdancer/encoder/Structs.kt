@@ -1,28 +1,53 @@
 package org.mechdancer.encoder
 
-import org.mechdancer.encoder.util.writeEnd
+import org.mechdancer.encoder.util.readEnd
+import org.mechdancer.encoder.util.zigzag
 import java.io.ByteArrayOutputStream
-import java.io.OutputStream
+import java.io.InputStream
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
+import kotlin.concurrent.write
 
-class Structs {
+/**
+ * 结构描述管理
+ */
+class StructMonitor {
     private val lock = ReentrantReadWriteLock()
     private val core = mutableMapOf<String, StructDescription>()
 
     /** 构造节点的完整描述 */
-    fun buildDescription(name: String) =
-        lock.read {
-            val root =
-                core[name] ?: throw RuntimeException("detected unknown struct $name")
-            val stream = ByteArrayOutputStream()
-            stream.writeDescription(root)
-            mutableSetOf<StructDescription>()
-                .also { addDependenciesTo(it, root) }
-                .also { it.remove(root) }
-                .forEach(stream::writeDescription)
-            stream.toByteArray()
+    fun buildDescription(name: String): ByteArray {
+        val (root, temp) = lock.read {
+            val r = core[name] ?: throw RuntimeException("detected unknown struct $name")
+            r to mutableSetOf<StructDescription>().also { addDependenciesTo(it, r) }
         }
+
+        val list = temp.apply {
+            remove(root)
+            removeIf { it.fields.isEmpty() }
+        }
+
+        return ByteArrayOutputStream()
+            .also { stream ->
+                stream.zigzag((list.size + 1).toLong(), false)
+                root.writeTo(stream)
+                for (sub in list) sub.writeTo(stream)
+            }
+            .toByteArray()
+    }
+
+    /** 添加节点描述 */
+    fun add(struct: StructDescription) =
+        lock.write { core[struct.name] = struct }
+
+    /** 分析结构描述并添加 */
+    fun analysis(stream: InputStream): String {
+        val count = stream.zigzag(false).toInt()
+        if (count == 0) return stream.readEnd()
+        val list = List(count) { StructDescription.readFrom(stream) }
+        lock.write { list.forEach { core[it.name] = it } }
+        return list[0].name
+    }
 
     // 递归构造无环路的依赖集合
     private fun addDependenciesTo(
@@ -35,16 +60,4 @@ class Structs {
                 ?.let { addDependenciesTo(target, it) }
                 ?: throw RuntimeException("detected unknown struct $sub")
     }
-}
-
-// 描述符输出到流
-private fun OutputStream.writeDescription(
-    struct: StructDescription
-) {
-    writeEnd(struct.name)
-    for ((name, type) in struct.fields) {
-        writeEnd(name)
-        write(type.id)
-    }
-    write(0)
 }
