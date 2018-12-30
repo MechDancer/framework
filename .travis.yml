@@ -8,11 +8,10 @@ sudo: true
 before_install:
   # 赋予执行权限
   - chmod a+x gradlew
-  - chmod a+x deploy.sh
 
 script:
   # 清理、生成、测试、文档
-  - ./gradlew clean build dokka
+  - ./gradlew clean build
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
