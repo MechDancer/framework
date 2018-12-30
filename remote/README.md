@@ -1,6 +1,6 @@
 # 远程接入协议
 
-[![Download](https://api.bintray.com/packages/mechdancer/maven/remote/images/download.svg)](https://bintray.com/mechdancer/maven/remote/_latestVersion)[![Build Status](https://travis-ci.com/MechDancer/remote.svg?branch=master)](https://travis-ci.com/MechDancer/remote)
+[![Download](https://api.bintray.com/packages/mechdancer/maven/remote/images/download.svg)](https://bintray.com/mechdancer/maven/remote/_latestVersion)
 
 ## 设计思路
 
@@ -19,7 +19,7 @@
 
 1. 构造
 
-   要使用远程服务，首先必须构造承载远程服务的**终端**`RemoteHub`。 
+   要使用远程服务，首先必须构造承载远程服务的 **终端** `RemoteHub`。 
 
    尽管我们也不反对直接通过构造器构造，但对于 kotlin 的使用者来说，强烈建议使用 DSL 来构造（或者说 *配置* ）终端。
 

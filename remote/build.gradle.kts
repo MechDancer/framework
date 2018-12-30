@@ -1,7 +1,9 @@
+import com.novoda.gradle.release.PublishExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    kotlin("jvm")
+
+apply {
+    plugin("com.novoda.bintray-release")
 }
 
 version = "0.2.1-dev-5"
@@ -13,9 +15,22 @@ dependencies {
     compile(project(":dependency"))
 }
 
-task<Jar>("sourceJar") {
+task<Jar>("sourcesJar") {
     classifier = "sources"
-    from(sourceSets["main"].allSource)
+    from(java.sourceSets["main"].allSource)
 }
 
-tasks["jar"].dependsOn("sourceJar")
+
+configure<PublishExtension> {
+    userOrg = "mechdancer"
+    groupId = "org.mechdancer"
+    artifactId = "remote"
+    publishVersion = version.toString()
+    desc = "communication lib"
+    website = "https://github.com/MechDancer/framework/remote"
+    setLicences("WTFPL")
+}
+artifacts {
+    add("archives", tasks["sourcesJar"])
+    add("archives", tasks["javadocJar"])
+}

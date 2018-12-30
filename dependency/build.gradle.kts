@@ -1,7 +1,8 @@
+import com.novoda.gradle.release.PublishExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-    kotlin("jvm")
+apply {
+    plugin("com.novoda.bintray-release")
 }
 
 version = "0.1.0-rc-1"
@@ -11,9 +12,21 @@ dependencies {
     compile(kotlin("reflect"))
 }
 
-task<Jar>("sourceJar") {
+task<Jar>("sourcesJar") {
     classifier = "sources"
-    from(sourceSets["main"].allSource)
+    from(java.sourceSets["main"].allSource)
 }
 
-tasks["jar"].dependsOn("sourceJar")
+configure<PublishExtension> {
+    userOrg = "mechdancer"
+    groupId = "org.mechdancer"
+    artifactId = "dependency"
+    publishVersion = version.toString()
+    desc = "dependency management for mechdancer framework"
+    website = "https://github.com/MechDancer/framework/dependency"
+    setLicences("WTFPL")
+}
+artifacts {
+    add("archives", tasks["sourcesJar"])
+    add("archives", tasks["javadocJar"])
+}

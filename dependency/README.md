@@ -1,5 +1,7 @@
 # 依赖管理器
 
+[ ![Download](https://api.bintray.com/packages/mechdancer/maven/dependency/images/download.svg) ](https://bintray.com/mechdancer/maven/dependency/_latestVersion)
+
 本项目是对项目开发中常见的 *动态查找程序组件* 的抽象。通过定义一系列接口，规范了开发者对相互依赖的项目组件（全局资源和功能模块）进行弱耦合定义的操作。一些算法被用于支持开发者并发地将 **组件** `Component` **装载** `setup` 到到 **域** `DynamicScope` 中，并在装载时确定组件依赖关系。
 
 这个项目非常小，核心只包含 3 个重要的类，总代码量不到 200 行。
