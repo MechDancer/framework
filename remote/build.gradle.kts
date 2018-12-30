@@ -26,5 +26,7 @@ configure<PublishExtension> {
     publishVersion = version.toString()
     desc = "communication lib"
     website = "https://github.com/MechDancer/framework/remote"
+    issueTracker = "https://github.com/MechDancer/framework/issues"
+    repository = "https://github.com/MechDancer/framework.git"
     setLicences("WTFPL")
 }

@@ -25,5 +25,7 @@ configure<PublishExtension> {
     publishVersion = version.toString()
     desc = "simple data encoder"
     website = "https://github.com/MechDancer/framework/encoder"
+    issueTracker = "https://github.com/MechDancer/framework/issues"
+    repository = "https://github.com/MechDancer/framework.git"
     setLicences("WTFPL")
 }
