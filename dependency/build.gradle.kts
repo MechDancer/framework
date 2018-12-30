@@ -26,8 +26,3 @@ configure<PublishExtension> {
     website = "https://github.com/MechDancer/framework/dependency"
     setLicences("WTFPL")
 }
-
-artifacts {
-    add("archives", tasks["sourcesJar"])
-    add("archives", tasks["javadocJar"])
-}

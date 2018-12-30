@@ -28,8 +28,3 @@ configure<PublishExtension> {
     website = "https://github.com/MechDancer/framework/remote"
     setLicences("WTFPL")
 }
-
-artifacts {
-    add("archives", tasks["sourcesJar"])
-    add("archives", tasks["javadocJar"])
-}
