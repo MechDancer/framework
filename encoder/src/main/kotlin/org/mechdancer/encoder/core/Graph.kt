@@ -33,13 +33,6 @@ open class Graph<
             .also { lock.read { key.addTo(it) } }
             .let { Graph(it, selector) }
 
-    /** 构造包含[key]的连通子图 */
-    fun subWith1(key: Key) =
-        mutableMapOf<Key, Iterable<Node>>()
-            .also { lock.read { key.addTo(it) } }
-            .let { it.remove(key)!! to it }
-            .let { (root, tail) -> root to Graph(tail, selector) }
-
     // 递归构造连通子图
     private fun Key.addTo(map: MutableMap<Key, Iterable<Node>>) {
         (core[this] ?: listOf())

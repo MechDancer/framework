@@ -12,18 +12,25 @@ import java.io.InputStream
 import java.io.OutputStream
 
 /**
- * 类型图
+ * 类型描述图
+ *   complete description: { size: uiv, struct: +description }
+ *   description:          { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
  */
-class TypeGraph<T : Map<String, Iterable<Field>>>
+class TypeGraph<T : Map<String, Collection<Field>>>
     (core: T) : Graph<String, Field, T>(core, { it.type }) {
 
     /** 从[root]生成结构的完整描述 */
-    fun serialize(root: String) =
+    fun serialize(root: String): ByteArray =
         ByteArrayOutputStream()
             .apply {
-                val (head, tail) = subWith(root).take(root)
+                val (head, tail) = subWith(root)
+                    .take(root)
+                    .let { (head, tail) ->
+                        head.first to head.second!! to
+                            tail.filterValues { it.firstOrNull() != null }
+                    }
                 zigzag(tail.size + 1L, false)
-                writeDescription(head.first, head.second!!)
+                writeDescription(head.first, head.second)
                 for ((type, fields) in tail) writeDescription(type, fields)
             }
             .toByteArray()
@@ -48,7 +55,7 @@ class TypeGraph<T : Map<String, Iterable<Field>>>
             write(0)
         }
 
-        // 把一个结构描述写入流
+        // 从流中读取一个结构描述
         private fun InputStream.readDescription() =
             readEnd() to generateSequence {
                 readEnd()

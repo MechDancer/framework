@@ -8,11 +8,11 @@ fun main(args: Array<String>) {
     val struct = TypeGraph(mutableMapOf())
     struct.operate {
         this["vector"] = setOf(
-            Field("data", "double", Property.Array)
+            Field("data", "d", Property.Array)
         )
         this["vector2D"] = setOf(
-            Field("x", "double", Property.Unit),
-            Field("y", "double", Property.Unit)
+            Field("x", "d", Property.Unit),
+            Field("y", "d", Property.Unit)
         )
     }
 
