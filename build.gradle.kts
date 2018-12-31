@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-version = "v1.1-dev-1"
+version = "v1.1.0"
 
 subprojects {
     group = "org.mechdancer"
