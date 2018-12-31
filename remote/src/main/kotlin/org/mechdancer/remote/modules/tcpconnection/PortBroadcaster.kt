@@ -36,6 +36,6 @@ class PortBroadcaster : UniqueComponent<PortBroadcaster>(),
     }
 
     private companion object {
-        val INTEREST = setOf(UdpCmd.ADDRESS_ASK.id)
+        val INTEREST = setOf(UdpCmd.ADDRESS_ASK)
     }
 }

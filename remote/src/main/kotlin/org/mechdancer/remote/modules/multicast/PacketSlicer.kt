@@ -98,7 +98,7 @@ class PacketSlicer : UniqueComponent<PacketSlicer>(),
             ?.let { (cmd, payload) -> RemotePacket(name, cmd, payload) }
             ?.let { pack ->
                 listeners
-                    .filter { pack.command in it.interest }
+                    .filter { pack.command in it.interest.map(Command::id) }
                     .forEach { it process pack }
             }
     }
@@ -174,7 +174,7 @@ class PacketSlicer : UniqueComponent<PacketSlicer>(),
     }
 
     private companion object {
-        val INTEREST = setOf(UdpCmd.PACKET_SLICE.id)
+        val INTEREST = setOf(UdpCmd.PACKET_SLICE)
         const val LAST = 0.toByte()
     }
 }

@@ -7,10 +7,7 @@ import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.protocol.SimpleInputStream
 import org.mechdancer.remote.protocol.readEnd
-import org.mechdancer.remote.resources.Addresses
-import org.mechdancer.remote.resources.MulticastSockets
-import org.mechdancer.remote.resources.Name
-import org.mechdancer.remote.resources.Networks
+import org.mechdancer.remote.resources.*
 import java.net.DatagramPacket
 import java.net.Inet4Address
 import java.net.InterfaceAddress
@@ -71,7 +68,10 @@ class MulticastReceiver(
             payload = stream.lookRest()
         ).also { pack ->
             listeners
-                .filter { it.interest.isEmpty() || pack.command in it.interest }
+                .filter {
+                    it.interest.isEmpty()
+                        || pack.command in it.interest.map(Command::id)
+                }
                 .forEach { it process pack }
         }
     }

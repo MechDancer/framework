@@ -43,7 +43,7 @@ class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
     }
 
     private companion object {
-        val INTEREST = setOf(UdpCmd.ADDRESS_ACK.id)
+        val INTEREST = setOf(UdpCmd.ADDRESS_ACK)
         operator fun ByteArray.invoke(n: Int) = get(n).toInt() and 0xff
     }
 }

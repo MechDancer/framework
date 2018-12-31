@@ -7,6 +7,7 @@ import org.mechdancer.dependency.unique.UniqueDependencyManager
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastListener
 import org.mechdancer.remote.protocol.RemotePacket
+import org.mechdancer.remote.resources.Command
 import org.mechdancer.remote.resources.Group
 import org.mechdancer.remote.resources.UdpCmd
 
@@ -45,6 +46,6 @@ class GroupMonitor(
     }
 
     private companion object {
-        val INTEREST = setOf<Byte>()
+        val INTEREST = setOf<Command>()
     }
 }
