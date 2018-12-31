@@ -14,6 +14,7 @@ buildscript {
     }
 }
 
+version = "v1.1-dev-1"
 
 subprojects {
     group = "org.mechdancer"
@@ -29,7 +30,6 @@ subprojects {
         plugin("java")
     }
 
-
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
@@ -41,7 +41,6 @@ subprojects {
         targetCompatibility = "1.8"
     }
 
-
     task<Jar>("javadocJar") {
         classifier = "javadoc"
         from("$buildDir/javadoc")
@@ -51,7 +50,6 @@ subprojects {
         from("$buildDir/libs")
         into("${rootProject.buildDir}/libs")
     }
-
 
     tasks.withType<DokkaTask> {
         outputFormat = "javadoc"
