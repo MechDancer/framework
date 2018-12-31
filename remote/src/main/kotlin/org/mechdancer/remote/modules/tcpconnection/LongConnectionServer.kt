@@ -1,5 +1,8 @@
 package org.mechdancer.remote.modules.tcpconnection
 
+import org.mechdancer.dependency.Component
+import org.mechdancer.dependency.Dependent
+import org.mechdancer.dependency.unique.UniqueDependencyManager
 import org.mechdancer.remote.resources.TcpCmd
 import java.net.Socket
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -11,14 +14,30 @@ import kotlin.concurrent.write
  */
 class LongConnectionServer(
     private val block: (ByteArray) -> ByteArray?
-) : ConnectionListener {
+) : ConnectionListener, Dependent {
     override val interest = TcpCmd.Blocking
 
     private val lock = ReentrantReadWriteLock()
     private var pipe: Pair<String, Socket>? = null
 
+    private val dependencies = UniqueDependencyManager()
+    private val connector by dependencies.must { it: ConnectionClient -> it::connect }
+
+    override fun sync(dependency: Component) =
+        dependencies.sync(dependency)
+
     /** 查看当前连接到的客户 */
     val client get() = lock.read { pipe?.first }
+
+    /** 连接到一个新的终端 */
+    fun connect(name: String) =
+        null != connector(name, TcpCmd.Blocking)
+            ?.let {
+                lock.write {
+                    pipe?.second?.close()
+                    pipe = name to it
+                }
+            }
 
     /** 发 */
     fun call(payload: ByteArray): ByteArray? =
@@ -35,6 +54,7 @@ class LongConnectionServer(
                 ?.also { pipe = client to socket }
         }?.also {
             while (socket.listen().let(block)?.let(socket::say) != null);
+            socket.close()
             lock.write { pipe = null }
         }
 

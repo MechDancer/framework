@@ -13,7 +13,7 @@ internal class Tool(
     val decoder: (InputStream) -> Any
 )
 
-internal val basic = mapOf(
+internal val BASIC = mapOf(
     "i1" to Tool(::ei1, ::di1),
     "i2" to Tool(::ei2, ::di2),
     "i4" to Tool(::ei4, ::di4),

@@ -12,8 +12,8 @@ import org.mechdancer.remote.resources.TcpFeedbackCmd
 /**
  * 短连接服务器
  */
-class ShortConnectionServer(private val rule: Rule = Rule()) :
-    UniqueComponent<ShortConnectionServer>(), Dependent {
+class ConnectionServer(private val rule: Rule = Rule()) :
+    UniqueComponent<ConnectionServer>(), Dependent {
 
     private val manager = UniqueDependencyManager()
 

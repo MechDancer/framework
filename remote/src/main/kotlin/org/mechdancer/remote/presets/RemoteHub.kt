@@ -7,10 +7,10 @@ import org.mechdancer.remote.modules.group.GroupMonitor
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastReceiver
 import org.mechdancer.remote.modules.multicast.PacketSlicer
+import org.mechdancer.remote.modules.tcpconnection.ConnectionClient
+import org.mechdancer.remote.modules.tcpconnection.ConnectionServer
 import org.mechdancer.remote.modules.tcpconnection.PortBroadcaster
 import org.mechdancer.remote.modules.tcpconnection.PortMonitor
-import org.mechdancer.remote.modules.tcpconnection.ShortConnectionClient
-import org.mechdancer.remote.modules.tcpconnection.ShortConnectionServer
 import org.mechdancer.remote.resources.*
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -54,8 +54,8 @@ class RemoteHub(
     private val synchronizer1 = PortBroadcaster()
     private val synchronizer2 = PortMonitor()
     // 短连接建立
-    private val client = ShortConnectionClient()
-    private val server = ShortConnectionServer()
+    private val client = ConnectionClient()
+    private val server = ConnectionServer()
 
     private val scope = scope {
         // 名字

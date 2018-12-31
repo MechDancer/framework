@@ -13,7 +13,7 @@ import java.net.SocketException
 /**
  * 短连接客户端
  */
-class ShortConnectionClient : UniqueComponent<ShortConnectionClient>(), Dependent {
+class ConnectionClient : UniqueComponent<ConnectionClient>(), Dependent {
 
     private val manager = UniqueDependencyManager()
 
