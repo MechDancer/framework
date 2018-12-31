@@ -9,6 +9,7 @@ version = "0.0.1-dev-1"
 
 dependencies {
     compile(kotlin("stdlib"))
+
     compile(project(":dependency"))
 }
 
@@ -22,12 +23,9 @@ configure<PublishExtension> {
     groupId = "org.mechdancer"
     artifactId = "encoder"
     publishVersion = version.toString()
-    desc = "encoder"
+    desc = "simple data encoder"
     website = "https://github.com/MechDancer/framework/encoder"
+    issueTracker = "https://github.com/MechDancer/framework/issues"
+    repository = "https://github.com/MechDancer/framework.git"
     setLicences("WTFPL")
-}
-
-artifacts {
-    add("archives", tasks["sourcesJar"])
-    add("archives", tasks["javadocJar"])
 }

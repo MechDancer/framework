@@ -24,10 +24,7 @@ configure<PublishExtension> {
     publishVersion = version.toString()
     desc = "dependency management for mechdancer framework"
     website = "https://github.com/MechDancer/framework/dependency"
+    issueTracker = "https://github.com/MechDancer/framework/issues"
+    repository = "https://github.com/MechDancer/framework.git"
     setLicences("WTFPL")
-}
-
-artifacts {
-    add("archives", tasks["sourcesJar"])
-    add("archives", tasks["javadocJar"])
 }
