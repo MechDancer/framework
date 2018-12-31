@@ -1,5 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
+import org.mechdancer.dependency.Component
 import org.mechdancer.dependency.Dependent
 import org.mechdancer.dependency.unique.UniqueComponent
 import org.mechdancer.dependency.unique.UniqueDependencyManager
@@ -7,7 +8,6 @@ import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.resources.ServerSockets
 import org.mechdancer.remote.resources.TcpCmd
 import org.mechdancer.remote.resources.TcpFeedbackCmd
-import kotlin.collections.set
 
 /**
  * 短连接服务器
@@ -18,15 +18,17 @@ class ShortConnectionServer(private val rule: Rule = Rule()) :
     private val manager = UniqueDependencyManager()
 
     private val servers by manager.must<ServerSockets>()
-    private val mailListener = hashSetOf<MailListener>()
-    private val listeners = hashMapOf<Byte, ShortConnectionListener>()
+    private val mailListener = mutableSetOf<MailListener>()
+    private val listeners = hashMapOf<Byte, MutableSet<ConnectionListener>>()
 
-    override fun sync(dependency: org.mechdancer.dependency.Component): Boolean {
+    override fun sync(dependency: Component): Boolean {
         manager.sync(dependency)
         if (dependency is MailListener)
             mailListener.add(dependency)
-        if (dependency is ShortConnectionListener)
-            listeners[dependency.interest] = dependency
+        if (dependency is ConnectionListener)
+            listeners.compute(dependency.interest.id) { _, list ->
+                list?.apply { add(dependency) } ?: mutableSetOf(dependency)
+            }
         return false
     }
 
@@ -46,7 +48,9 @@ class ShortConnectionServer(private val rule: Rule = Rule()) :
                             listener.process(client, payload)
                     }
                     else           ->
-                        listeners[cmd]?.process(client, socket)
+                        listeners[cmd]?.firstOrNull {
+                            it.process(client, socket)
+                        }
                 }
             }
     }

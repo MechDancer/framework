@@ -6,6 +6,7 @@ package org.mechdancer.remote.resources
 enum class TcpCmd(override val id: Byte) : Command {
     Mail(0),
     Dialog(1),
+    Blocking(2),
     COMMON(127);
 
     companion object {

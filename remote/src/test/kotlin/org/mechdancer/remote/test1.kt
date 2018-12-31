@@ -22,7 +22,7 @@ fun main() {
 
         inAddition {
             // 接收特定组播包
-            multicastListener(Cmd.X.id) { sender, cmd, payload ->
+            multicastListener(Cmd.X) { sender, cmd, payload ->
                 TODO("not implemented")
             }
         }
@@ -36,7 +36,7 @@ fun main() {
 
         inAddition {
             // 处理特定短连接
-            connectionListener(Cmd.X.id) { client, server ->
+            connectionListener(Cmd.X) { client, server ->
                 TODO("not implemented")
             }
         }
