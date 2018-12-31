@@ -30,14 +30,17 @@ class LongConnectionServer(
     val client get() = lock.read { pipe?.first }
 
     /** 连接到一个新的终端 */
-    fun connect(name: String) =
-        null != connector(name, TcpCmd.Blocking)
+    fun connect(name: String): String? {
+        name.takeIf { client != it }
+            ?.let { connector(name, TcpCmd.Blocking) }
             ?.let {
                 lock.write {
                     pipe?.second?.close()
                     pipe = name to it
                 }
             }
+        return client
+    }
 
     /** 发 */
     fun call(payload: ByteArray): ByteArray? =
