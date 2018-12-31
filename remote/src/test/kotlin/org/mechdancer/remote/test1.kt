@@ -1,12 +1,12 @@
 package org.mechdancer.remote
 
-import org.mechdancer.remote.modules.multicast.MulticastListener
-import org.mechdancer.remote.modules.tcpconnection.*
+import org.mechdancer.remote.modules.multicast.multicastListener
+import org.mechdancer.remote.modules.tcpconnection.connectionListener
+import org.mechdancer.remote.modules.tcpconnection.mailListener
+import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.RemoteDsl.Companion.remoteHub
-import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.resources.Command
 import org.mechdancer.remote.resources.TcpCmd
-import java.net.Socket
 import kotlin.concurrent.thread
 
 const val DEBUG = true
@@ -22,51 +22,22 @@ fun main() {
 
         inAddition {
             // 接收特定组播包
-            object : MulticastListener {
-                override val interest = listOf(Cmd.X.id)
-                override fun process(remotePacket: RemotePacket) {
-                    val (sender, _, payload) = remotePacket
-                    TODO("not implemented")
-                }
-
-                override fun equals(other: Any?) = false
-                override fun hashCode() = 0
+            multicastListener(Cmd.X.id) { sender, cmd, payload ->
+                TODO("not implemented")
             }
         }
 
         inAddition {
             // 接收 TCP 通信包
-            object : MailListener {
-                override fun process(sender: String, payload: ByteArray) {
-                    TODO("not implemented")
-                }
-
-                override fun equals(other: Any?) = false
-                override fun hashCode() = 1
+            mailListener { sender, payload ->
+                TODO("not implemented")
             }
         }
 
         inAddition {
             // 处理特定短连接
-            object : ShortConnectionListener {
-                override val interest = Cmd.X.id
-
-                override fun process(client: String, socket: Socket) {
-                    TODO("not implemented")
-                }
-
-                override fun equals(other: Any?) = false
-                override fun hashCode() = 2
-            }
-        }
-
-        inAddition {
-            // 处理通用短连接
-            CommonTcpServer { sender, socket ->
-                log("- hear common by $sender")
-                socket.listen()
-                socket.say("I see.")
-                TODO("添加其他功能")
+            connectionListener(Cmd.X.id) { client, server ->
+                TODO("not implemented")
             }
         }
 
