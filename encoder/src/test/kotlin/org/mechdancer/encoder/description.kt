@@ -1,23 +1,30 @@
 package org.mechdancer.encoder
 
+import org.mechdancer.encoder.core.Field
+import org.mechdancer.encoder.core.Property
 import java.io.ByteArrayInputStream
 
 fun main(args: Array<String>) {
-    val struct = StructMonitor()
-    for (value in BasicStruct.values()) {
-        struct.add(value.encode)
+    val struct = TypeGraph(mutableMapOf())
+    struct.operate {
+        this["vector"] = setOf(
+            Field("data", "double", Property.Array)
+        )
+        this["vector2D"] = setOf(
+            Field("x", "double", Property.Unit),
+            Field("y", "double", Property.Unit)
+        )
     }
 
-    struct.add(
-        StructDescription(
-            "vector2D",
-            listOf("f8" to FieldType.Unit, "f8" to FieldType.Unit)
-        )
-    )
+    test(struct, "vector")
+    test(struct, "vector2D")
+}
 
-    struct
-        .buildDescription("vector2D")
+fun test(graph: TypeGraph<*>, type: String) {
+    graph
+        .serialize(type)
         .also { println(it.joinToString(" ")) }
-        .let { struct.analysis(ByteArrayInputStream(it)) }
-        .let { (topic, bytes) -> println("$topic: byte[${bytes.size}]") }
+        .let { TypeGraph.deserialize(ByteArrayInputStream(it)) }
+        .forEach { (name, fields) -> println("$name: $fields") }
+        .also { println() }
 }
