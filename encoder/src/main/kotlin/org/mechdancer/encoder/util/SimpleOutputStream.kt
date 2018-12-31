@@ -40,6 +40,5 @@ class SimpleOutputStream(size: Int) : OutputStream(), Cloneable {
     }
 
     public override fun clone() =
-        SimpleOutputStream(core.size)
-            .also { it.writeRange(core, 0, ptr) }
+        buildByteArray(core.size) { writeRange(core, 0, ptr) }
 }

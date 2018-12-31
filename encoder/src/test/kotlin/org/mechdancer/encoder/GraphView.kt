@@ -1,7 +1,8 @@
 package org.mechdancer.encoder
 
-import org.mechdancer.encoder.core.Field
-import org.mechdancer.encoder.core.Property
+import org.mechdancer.encoder.core.type.Field
+import org.mechdancer.encoder.core.type.Property
+import org.mechdancer.encoder.core.type.TypeGraph
 import org.mechdancer.encoder.core.view
 
 fun main(args: Array<String>) {
@@ -16,6 +17,8 @@ fun main(args: Array<String>) {
             )
         )
     )
+
+    types.view("double").let(::println)
     types.view("vector").let(::println)
     types.view("vector2D").let(::println)
 }

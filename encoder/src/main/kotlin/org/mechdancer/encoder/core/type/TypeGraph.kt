@@ -1,39 +1,35 @@
-package org.mechdancer.encoder
+package org.mechdancer.encoder.core.type
 
-import org.mechdancer.encoder.core.Field
 import org.mechdancer.encoder.core.Graph
-import org.mechdancer.encoder.core.Property
-import org.mechdancer.encoder.core.take
+import org.mechdancer.encoder.core.extract
+import org.mechdancer.encoder.core.simplify
+import org.mechdancer.encoder.util.buildByteArray
 import org.mechdancer.encoder.util.readEnd
 import org.mechdancer.encoder.util.writeEnd
 import org.mechdancer.encoder.util.zigzag
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
 /**
  * 类型描述图
- *   complete description: { size: uiv, struct: +description }
- *   description:          { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
+ *   complete description: { size: uiv, struct: +(item description) }
+ *     item   description: { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
  */
-class TypeGraph<T : Map<String, Collection<Field>>>
-    (core: T) : Graph<String, Field, T>(core, { it.type }) {
+class TypeGraph<T : Map<String, Iterable<Field>>>
+    (core: T) : Graph<String, Field, T>(core, Field::type) {
 
     /** 从[root]生成结构的完整描述 */
-    fun serialize(root: String): ByteArray =
-        ByteArrayOutputStream()
-            .apply {
-                val (head, tail) = subWith(root)
-                    .take(root)
-                    .let { (head, tail) ->
-                        head.first to head.second!! to
-                            tail.filterValues { it.firstOrNull() != null }
-                    }
-                zigzag(tail.size + 1L, false)
-                writeDescription(head.first, head.second)
-                for ((type, fields) in tail) writeDescription(type, fields)
-            }
-            .toByteArray()
+    fun serialize(root: String) =
+        buildByteArray {
+            val (head, tail) =
+                subWith(root)
+                    .extract(root)
+                    .let { (head, tail) -> head to tail.simplify() }
+            zigzag(tail.size + 1L, false)
+            // subWith: root in sub => extract: second in head
+            writeDescription(head.first, head.second!!)
+            for ((type, fields) in tail) writeDescription(type, fields)
+        }
 
     companion object {
         /** 从[root]生成结构的完整描述 */
@@ -61,7 +57,11 @@ class TypeGraph<T : Map<String, Collection<Field>>>
                 readEnd()
                     .takeIf(String::isNotEmpty)
                     ?.let { name ->
-                        Field(name, readEnd(), Property.map[read()]!!)
+                        Field(
+                            name,
+                            readEnd(),
+                            Property.map[read()]!!
+                        )
                     }
             }.toList()
     }

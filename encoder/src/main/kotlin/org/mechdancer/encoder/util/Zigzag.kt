@@ -1,6 +1,5 @@
 package org.mechdancer.encoder.util
 
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.experimental.and
@@ -52,10 +51,8 @@ fun InputStream.zigzag(signed: Boolean): Long {
  * @param signed 是否带符号编码
  * @return 编码
  */
-fun Long.zigzag(signed: Boolean): ByteArray =
-    ByteArrayOutputStream(10)
-        .zigzag(this, signed)
-        .toByteArray()
+fun Long.zigzag(signed: Boolean) =
+    buildByteArray { zigzag(this@zigzag, signed) }
 
 /**
  * 解码变长整数

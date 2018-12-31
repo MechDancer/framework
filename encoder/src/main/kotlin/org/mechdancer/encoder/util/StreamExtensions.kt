@@ -4,6 +4,12 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+inline fun buildByteArray(block: OutputStream.() -> Unit): ByteArray =
+    ByteArrayOutputStream().apply(block).toByteArray()
+
+inline fun buildByteArray(size: Int, block: OutputStream.() -> Unit) =
+    SimpleOutputStream(size).apply(block).core
+
 /** 先将长度写入流，再将 [pack] 写入流 */
 infix fun OutputStream.writeWithLength(pack: ByteArray) {
     zigzag(pack.size.toLong(), false)

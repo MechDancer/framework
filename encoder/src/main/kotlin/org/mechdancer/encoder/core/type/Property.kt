@@ -1,4 +1,4 @@
-package org.mechdancer.encoder.core
+package org.mechdancer.encoder.core.type
 
 /**
  * 字段类型

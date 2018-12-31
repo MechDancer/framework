@@ -1,7 +1,8 @@
 package org.mechdancer.encoder
 
-import org.mechdancer.encoder.core.Field
-import org.mechdancer.encoder.core.Property
+import org.mechdancer.encoder.core.type.Field
+import org.mechdancer.encoder.core.type.Property
+import org.mechdancer.encoder.core.type.TypeGraph
 import java.io.ByteArrayInputStream
 
 fun main(args: Array<String>) {
