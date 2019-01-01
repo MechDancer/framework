@@ -24,7 +24,6 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
     private val struct: (String) -> Iterable<Field>
 ) : Graph<Data, FieldData, T>(core, FieldData::data) {
 
-
     /** 从[root]出发进行序列化 */
     fun serialize(root: Data): ByteArray {
         val (head, tail) = extract(root)
@@ -39,6 +38,13 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
     }
 
     companion object {
+        /**
+         * 从邻接表构造引用关系图
+         * 其实是自动分配了指针
+         *
+         * @param data   邻接表 { name: String, fields: +(field data) }
+         * @param struct 结构描述表
+         */
         operator fun invoke(
             vararg data: Pair<String, Iterable<FieldData>>,
             struct: (String) -> Iterable<Field>
@@ -48,7 +54,11 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
             struct
         )
 
-        /** 以[root]为根反序列化 */
+        /**
+         * 从输入流[stream]反序列化
+         * 已知序号0的引用类型为[root]
+         * 所有已知类型的结构描述通过[struct]查询
+         */
         fun deserialize(
             stream: InputStream,
             root: String,

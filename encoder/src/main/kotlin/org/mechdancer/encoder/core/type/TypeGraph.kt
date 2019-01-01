@@ -19,11 +19,11 @@ class TypeGraph<T : Map<String, Iterable<Field>>>
     (core: T) : Graph<String, Field, T>(core, Field::type) {
 
     /** 从[root]生成结构的完整描述 */
-    fun serialize(root: String) =
+    fun serialize(rootType: String) =
         buildByteArray {
             val (head, tail) =
-                subWith(root)
-                    .extract(root)
+                subWith(rootType)
+                    .extract(rootType)
                     .let { (head, tail) -> head to tail.simplify() }
             zigzag(tail.size + 1L, false)
             // subWith: root in sub => extract: second in head
