@@ -1,7 +1,6 @@
 package org.mechdancer.encoder.core
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 /**
@@ -29,9 +28,13 @@ open class Graph<
 
     /** 构造包含[root]的连通子图 */
     fun subWith(root: Node) =
-        mutableMapOf<Node, Iterable<Path>>()
-            .also { lock.read { root.addTo(it) } }
+        sort(root)
+            .associateWith {
+                val list = getOrEmpty(it)
+                (list as? Set) ?: list.toSet()
+            }
             .let { Graph(it, selector) }
+
 
     /**
      * 从[root]开始（反）拓扑排序
@@ -60,14 +63,4 @@ open class Graph<
                             sub.addAll(it)
                         }
             }
-
-    // 递归构造连通子图
-    private fun Node.addTo(map: MutableMap<Node, Iterable<Path>>) {
-        if (map.size < size) // 仍有节点未加入
-            get(this)        // 当前节点出路
-                ?.takeIf(Iterable<*>::any)                     // 不是叶子
-                ?.takeIf { map.putIfAbsent(this, it) == null } // 之前不存在
-                ?.map(selector)                                //
-                ?.forEach { it.addTo(map) }                    // 递归
-    }
 }

@@ -10,7 +10,10 @@ fun main(args: Array<String>) {
 fun test(graph: TypeGraph<*>, type: String) {
     graph
         .serialize(type)
-        .also { println(it.joinToString(" ")) }
+        .also {
+            println("bytes[${it.size}]:")
+            println(it.joinToString(" "))
+        }
         .let { TypeGraph.deserialize(ByteArrayInputStream(it)) }
         .forEach { (name, fields) -> println("$name: $fields") }
         .also { println() }

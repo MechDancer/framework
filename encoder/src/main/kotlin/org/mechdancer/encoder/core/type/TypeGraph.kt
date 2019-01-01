@@ -1,8 +1,6 @@
 package org.mechdancer.encoder.core.type
 
 import org.mechdancer.encoder.core.Graph
-import org.mechdancer.encoder.core.extract
-import org.mechdancer.encoder.core.simplify
 import org.mechdancer.encoder.util.buildByteArray
 import org.mechdancer.encoder.util.readEnd
 import org.mechdancer.encoder.util.writeEnd
@@ -21,14 +19,9 @@ class TypeGraph<T : Map<String, List<Field>>>
     /** 从[root]生成结构的完整描述 */
     fun serialize(rootType: String) =
         buildByteArray {
-            val (head, tail) =
-                subWith(rootType)
-                    .extract(rootType)
-                    .let { (head, tail) -> head to tail.simplify() }
-            zigzag(tail.size + 1L, false)
-            // subWith: root in sub => extract: second in head
-            writeDescription(head.first, head.second!!)
-            for ((type, fields) in tail) writeDescription(type, fields)
+            val sub = subWith(rootType)
+            zigzag(sub.size.toLong(), false)
+            for ((type, fields) in sub) writeDescription(type, fields)
         }
 
     companion object {

@@ -5,10 +5,11 @@ apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.0.1-dev-2"
+version = "0.0.1-dev-3"
 
 dependencies {
     compile(kotlin("stdlib"))
+    testCompile("junit", "junit", "+")
 }
 
 task<Jar>("sourcesJar") {

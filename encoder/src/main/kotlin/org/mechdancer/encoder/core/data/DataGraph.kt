@@ -1,8 +1,6 @@
 package org.mechdancer.encoder.core.data
 
 import org.mechdancer.encoder.core.Graph
-import org.mechdancer.encoder.core.extract
-import org.mechdancer.encoder.core.simplify
 import org.mechdancer.encoder.core.type.Field
 import org.mechdancer.encoder.core.type.Property
 import org.mechdancer.encoder.util.buildByteArray
@@ -25,17 +23,13 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
 ) : Graph<Data, FieldData, T>(core, FieldData::data) {
 
     /** 从[root]出发进行序列化 */
-    fun serialize(root: Data): ByteArray {
-        val (head, tail) = extract(root)
-        val references = tail.simplify()
-
-        return buildByteArray {
-            zigzag(tail.size + 1L, false)
-            writeData(head.second!!, struct(head.first.type))
-            for (reference in references)
+    fun serialize(root: Data) =
+        buildByteArray {
+            val sub = subWith(root)
+            zigzag(sub.size.toLong(), false)
+            for (reference in sub)
                 writeData(reference.value, struct(reference.key.type))
         }
-    }
 
     companion object {
         /**
