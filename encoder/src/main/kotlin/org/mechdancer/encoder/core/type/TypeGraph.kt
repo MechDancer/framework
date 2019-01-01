@@ -15,7 +15,7 @@ import java.io.OutputStream
  *   complete description: { size: uv, struct: +(item description) }
  *     item   description: { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
  */
-class TypeGraph<T : Map<String, Iterable<Field>>>
+class TypeGraph<T : Map<String, List<Field>>>
     (core: T) : Graph<String, Field, T>(core, Field::type) {
 
     /** 从[root]生成结构的完整描述 */

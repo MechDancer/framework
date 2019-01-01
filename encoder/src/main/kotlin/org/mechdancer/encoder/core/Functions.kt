@@ -19,8 +19,3 @@ fun <Node : Any, Path : Any>
 fun <Node : Any, Path : Any>
     Map<Node, Iterable<Path>>.simplify() =
     filterValues(Iterable<*>::any)
-
-/** 用指针压缩标准图 */
-fun <Node : Any, Path : Any>
-    Map<Node, Iterable<Path>>.compress() =
-    ReferenceGraph(this)

@@ -106,10 +106,9 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                 // 编码
                 when (info.property) {
                     // 编码单体
-                    Property.Unit,
-                    Property.Nullable -> encoder(this, data)
+                    Property.Unit  -> encoder(this, data)
                     // 编码数组
-                    Property.Array    -> {
+                    Property.Array -> {
                         val array = when (data) {
                             is Iterable<*> -> data.toList()
                             is Array<*>    -> data.toList()
@@ -134,9 +133,8 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                     ?.let { (name, type, property) ->
                         val decoder = Basic.decoder(type)
                         FieldData(name, type, when (property) {
-                            Property.Unit,
-                            Property.Nullable -> decoder(this)
-                            Property.Array    -> List(zigzag(false).toInt()) { decoder(this) }
+                            Property.Unit  -> decoder(this)
+                            Property.Array -> List(zigzag(false).toInt()) { decoder(this) }
                         })
                     }
             }.toList()
