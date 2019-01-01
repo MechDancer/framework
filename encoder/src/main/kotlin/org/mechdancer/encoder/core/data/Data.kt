@@ -7,5 +7,5 @@ package org.mechdancer.encoder.core.data
  */
 data class Data(val type: String, val value: Any?) {
     override fun toString() =
-        "($type) ${if (type in BasicCoder) "[$value]" else value.toString()}"
+        "($type) ${if (type !in Basic) "[$value]" else value.toString()}"
 }

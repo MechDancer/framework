@@ -24,12 +24,13 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
     private val struct: (String) -> Iterable<Field>
 ) : Graph<Data, FieldData, T>(core, FieldData::data) {
 
+
     /** 从[root]出发进行序列化 */
-    fun serialize(root: Data) {
+    fun serialize(root: Data): ByteArray {
         val (head, tail) = extract(root)
         val references = tail.simplify()
 
-        buildByteArray {
+        return buildByteArray {
             zigzag(tail.size + 1L, false)
             writeData(head.second!!, struct(head.first.type))
             for (reference in references)
@@ -38,6 +39,14 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
     }
 
     companion object {
+        operator fun invoke(
+            vararg data: Pair<String, Iterable<FieldData>>,
+            struct: (String) -> Iterable<Field>
+        ) = DataGraph(
+            data.mapIndexed { i, (type, fields) -> Data(type, i) to fields }
+                .toMap(),
+            struct
+        )
 
         /** 以[root]为根反序列化 */
         fun deserialize(
@@ -56,7 +65,7 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                     val fields = stream.readData(struct(type).toList())
                     fields
                         .asSequence()
-                        .filter { it.data.type !in BasicCoder }
+                        .filter { it.data.type !in Basic }
                         .map(FieldData::data)
                         .forEach { (type, i) -> types[i as Int] = type }
                     Data(type, i) to fields
@@ -83,7 +92,7 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                 // 写入序号
                 zigzag(i + 1L, false)
                 // 生成编码器
-                val encoder = BasicCoder.encoder(info.type)
+                val encoder = Basic.encoder(info.type)
                 // 编码
                 when (info.property) {
                     // 编码单体
@@ -113,7 +122,7 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                     ?.let { it.toInt() - 1 }
                     ?.let(struct::get)
                     ?.let { (name, type, property) ->
-                        val decoder = BasicCoder.decoder(type)
+                        val decoder = Basic.decoder(type)
                         FieldData(name, type, when (property) {
                             Property.Unit,
                             Property.Nullable -> decoder(this)

@@ -8,7 +8,7 @@ import java.io.DataOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-internal enum class BasicCoder(
+internal enum class Basic(
     val encoder: (OutputStream, Any) -> Unit,
     val decoder: (InputStream) -> Any
 ) {
@@ -45,14 +45,14 @@ internal enum class BasicCoder(
 
     companion object {
         private val types =
-            enumValues<BasicCoder>().map(Enum<*>::name)
+            enumValues<Basic>().map(Enum<*>::name)
 
         private val encoders =
-            enumValues<BasicCoder>()
+            enumValues<Basic>()
                 .associate { it.name to it.encoder }
 
         private val decoders =
-            enumValues<BasicCoder>()
+            enumValues<Basic>()
                 .associate { it.name to it.decoder }
 
         operator fun contains(type: String) = type != R.name && type in types
