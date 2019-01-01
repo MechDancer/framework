@@ -15,11 +15,14 @@ import java.io.OutputStream
 
 /**
  * 引用关系图
- * item buffer: { fields: +(basic? bytes : index), 0 }
+ * total: { size: uv, data: +(item) }
+ * item:  { fields: +(i: uv, data: basic? bytes : reference index), 0 }
+ *
+ * @param struct 根据类型查找结构
  */
 class DataGraph<T : Map<Data, Iterable<FieldData>>>(
     core: T,
-    private val types: (Data) -> Iterable<Field>
+    private val struct: (String) -> Iterable<Field>
 ) : Graph<Data, FieldData, T>(core, FieldData::data) {
 
     /** 从[root]出发进行序列化 */
@@ -36,13 +39,29 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
 
         buildByteArray {
             zigzag(tail.size + 1L, false)
-            writeData(index, head.second!!, types(head.first))
+            writeData(index, head.second!!, struct(head.first.type))
             for (reference in references)
-                writeData(index, reference.value, types(reference.key))
+                writeData(index, reference.value, struct(reference.key.type))
         }
     }
 
     companion object {
+
+        fun deserialize(
+            stream: InputStream,
+            rootType: String,
+            struct: (String) -> Iterable<Field>
+        ) {
+            val count = stream.zigzag(false).toInt() - 1
+            val graph = DataGraph(mutableMapOf(), struct)
+            val root = stream.readData(struct(rootType).toList())
+            graph {
+                this[Data(rootType, root)] = root
+            }
+            root.asSequence()
+                .filter { it.data.type !in BasicCoder }
+                .associate { (it.data.value as Long).toInt() to it.data.type }
+        }
 
         // 生成引用编码器
         private fun pointerWriter(map: Map<Any, Int>) =
@@ -93,18 +112,20 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
         }
 
         // 从流中读取一个数据项
-        private fun InputStream.readData(struct: Field) {
-            fun build(value: Any) = FieldData(struct.name, Data(struct.type, value))
-            val decoder = Decoders[struct.type] ?: Uv.decoder
+        private fun InputStream.readData(struct: List<Field>) =
             generateSequence {
                 zigzag(false)
                     .takeIf { it > 0 }
-                    ?.to(build(when (struct.property) {
-                                   Property.Unit,
-                                   Property.Nullable -> decoder(this)
-                                   Property.Array    -> List(zigzag(false).toInt()) { decoder(this) }
-                               }))
-            }.toMap()
-        }
+                    ?.let { it.toInt() - 1 }
+                    ?.let(struct::get)
+                    ?.let { (name, type, property) ->
+                        val decoder = Decoders[type] ?: Uv.decoder
+                        FieldData(name, type, when (property) {
+                            Property.Unit,
+                            Property.Nullable -> decoder(this)
+                            Property.Array    -> List(zigzag(false).toInt()) { decoder(this) }
+                        })
+                    }
+            }.toList()
     }
 }

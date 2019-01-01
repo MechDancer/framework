@@ -50,6 +50,10 @@ internal enum class BasicCoder(
      );
 
     companion object {
+        private val types = enumValues<BasicCoder>().map(Enum<*>::name)
+
+        operator fun contains(type: String) = type in types
+
         val Encoders = enumValues<BasicCoder>().associate {
             it.name to it.encoder
         }

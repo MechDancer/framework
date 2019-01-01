@@ -24,7 +24,7 @@ open class Graph<
     private val lock = ReentrantReadWriteLock()
 
     /** 安全操作表结构 */
-    fun operate(block: Core.() -> Unit) =
+    operator fun invoke(block: Core.() -> Unit) =
         lock.write { block(core) }
 
     /** 构造包含[key]的连通子图 */

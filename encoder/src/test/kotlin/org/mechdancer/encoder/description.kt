@@ -7,7 +7,7 @@ import java.io.ByteArrayInputStream
 
 fun main(args: Array<String>) {
     val struct = TypeGraph(mutableMapOf())
-    struct.operate {
+    struct.invoke {
         this["vector"] = setOf(
             Field("data", "d", Property.Array)
         )
