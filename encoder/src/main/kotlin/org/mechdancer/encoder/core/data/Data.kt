@@ -3,8 +3,9 @@ package org.mechdancer.encoder.core.data
 /**
  * 数据描述
  * @param type  名字
- * @param value 值
+ * @param value 值类型? 值 : 指针
  */
 data class Data(val type: String, val value: Any?) {
-    override fun toString() = "($type) $value"
+    override fun toString() =
+        "($type) ${if (type in BasicCoder) "[$value]" else value.toString()}"
 }
