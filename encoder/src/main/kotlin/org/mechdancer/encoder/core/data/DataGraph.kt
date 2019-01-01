@@ -1,13 +1,16 @@
 package org.mechdancer.encoder.core.data
 
 import org.mechdancer.encoder.core.Graph
+import org.mechdancer.encoder.core.data.BasicCoder.Companion.Decoders
 import org.mechdancer.encoder.core.data.BasicCoder.Companion.Encoders
+import org.mechdancer.encoder.core.data.BasicCoder.Uv
 import org.mechdancer.encoder.core.extract
 import org.mechdancer.encoder.core.simplify
 import org.mechdancer.encoder.core.type.Field
 import org.mechdancer.encoder.core.type.Property
 import org.mechdancer.encoder.util.buildByteArray
 import org.mechdancer.encoder.util.zigzag
+import java.io.InputStream
 import java.io.OutputStream
 
 /**
@@ -87,6 +90,21 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
                 }
             }
             write(0)
+        }
+
+        // 从流中读取一个数据项
+        private fun InputStream.readData(struct: Field) {
+            fun build(value: Any) = FieldData(struct.name, Data(struct.type, value))
+            val decoder = Decoders[struct.type] ?: Uv.decoder
+            generateSequence {
+                zigzag(false)
+                    .takeIf { it > 0 }
+                    ?.to(build(when (struct.property) {
+                                   Property.Unit,
+                                   Property.Nullable -> decoder(this)
+                                   Property.Array    -> List(zigzag(false).toInt()) { decoder(this) }
+                               }))
+            }.toMap()
         }
     }
 }
