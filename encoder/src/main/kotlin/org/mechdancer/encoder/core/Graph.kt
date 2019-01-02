@@ -1,8 +1,5 @@
 package org.mechdancer.encoder.core
 
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.write
-
 /**
  * 稀疏有向图/出路邻接表
  *
@@ -20,11 +17,6 @@ open class Graph<
     private val core: Core,
     private val selector: (Path) -> Node
 ) : Map<Node, Iterable<Path>> by core {
-    private val lock = ReentrantReadWriteLock()
-
-    /** 安全操作表结构 */
-    operator fun invoke(block: Core.() -> Unit) =
-        lock.write { block(core) }
 
     /** 构造包含[root]的连通子图 */
     fun subWith(root: Node) =
@@ -34,7 +26,6 @@ open class Graph<
                 (list as? Set) ?: list.toSet()
             }
             .let { Graph(it, selector) }
-
 
     /**
      * 从[root]开始（反）拓扑排序

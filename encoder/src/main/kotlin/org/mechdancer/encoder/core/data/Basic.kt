@@ -8,6 +8,10 @@ import java.io.DataOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * 基本类型
+ * 同时作为值类型，编解码时进行内联
+ */
 internal enum class Basic(
     val encoder: (OutputStream, Any) -> Unit,
     val decoder: (InputStream) -> Any

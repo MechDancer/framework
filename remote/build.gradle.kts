@@ -16,7 +16,7 @@ dependencies {
 
 task<Jar>("sourcesJar") {
     classifier = "sources"
-    from(java.sourceSets["main"].allSource)
+    from(sourceSets["main"].allSource)
 }
 
 configure<PublishExtension> {
