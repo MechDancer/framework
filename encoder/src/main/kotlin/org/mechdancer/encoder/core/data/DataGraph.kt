@@ -3,7 +3,6 @@ package org.mechdancer.encoder.core.data
 import org.mechdancer.encoder.core.Graph
 import org.mechdancer.encoder.core.type.Field
 import org.mechdancer.encoder.core.type.Property
-import org.mechdancer.encoder.util.buildByteArray
 import org.mechdancer.encoder.util.zigzag
 import java.io.InputStream
 import java.io.OutputStream
@@ -24,11 +23,8 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
 
     /** 从[root]出发进行序列化 */
     fun serialize(root: Data) =
-        buildByteArray {
-            val sub = subWith(root)
-            zigzag(sub.size.toLong(), false)
-            for (reference in sub)
-                writeData(reference.value, struct(reference.key.type))
+        serialize(root) { data, fields ->
+            writeData(fields, struct(data.type))
         }
 
     companion object {
