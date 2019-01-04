@@ -18,7 +18,7 @@ open class Graph<
     Node : Any,
     Path : Any,
     Core : Map<Node, Iterable<Path>>>(
-    private val core: Core,
+    val core: Core,
     private val selector: (Path) -> Node
 ) : Map<Node, Iterable<Path>> by core {
 
@@ -58,17 +58,6 @@ open class Graph<
                             sub.addAll(it)
                         }
             }
-
-    /**
-     * 转到引用关系图
-     */
-    fun toRef(): Map<Node, Map<Path, Int>> {
-        val list = toList()
-        val content = list.mapIndexed { i, (node, _) -> node to i }.toMap()
-        return list.associate { (node, paths) ->
-            node to paths.associateWith { content[selector(it)] ?: -1 }
-        }
-    }
 
     /** 从[root]出发进行序列化 */
     fun serialize(root: Node, block: OutputStream.(Node, Iterable<Path>) -> Unit) =
