@@ -1,5 +1,9 @@
 package org.mechdancer.encoder.core
 
+import org.mechdancer.encoder.util.buildByteArray
+import org.mechdancer.encoder.util.zigzag
+import java.io.OutputStream
+
 /**
  * 稀疏有向图/出路邻接表
  *
@@ -14,7 +18,7 @@ open class Graph<
     Node : Any,
     Path : Any,
     Core : Map<Node, Iterable<Path>>>(
-    private val core: Core,
+    val core: Core,
     private val selector: (Path) -> Node
 ) : Map<Node, Iterable<Path>> by core {
 
@@ -54,4 +58,12 @@ open class Graph<
                             sub.addAll(it)
                         }
             }
+
+    /** 从[root]出发进行序列化 */
+    fun serialize(root: Node, block: OutputStream.(Node, Iterable<Path>) -> Unit) =
+        buildByteArray {
+            val sub = subWith(root)
+            zigzag(sub.size.toLong(), false)
+            for ((data, reference) in sub) block(data, reference)
+        }
 }

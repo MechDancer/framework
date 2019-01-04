@@ -1,7 +1,6 @@
 package org.mechdancer.encoder.core.type
 
 import org.mechdancer.encoder.core.Graph
-import org.mechdancer.encoder.util.buildByteArray
 import org.mechdancer.encoder.util.readEnd
 import org.mechdancer.encoder.util.writeEnd
 import org.mechdancer.encoder.util.zigzag
@@ -14,14 +13,12 @@ import java.io.OutputStream
  *     item   description: { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
  */
 class TypeGraph<T : Map<String, List<Field>>>
-    (core: T) : Graph<String, Field, T>(core, Field::type) {
+(core: T) : Graph<String, Field, T>(core, Field::type) {
 
     /** 从[root]生成结构的完整描述 */
     fun serialize(rootType: String) =
-        buildByteArray {
-            val sub = subWith(rootType)
-            zigzag(sub.size.toLong(), false)
-            for ((type, fields) in sub) writeDescription(type, fields)
+        serialize(rootType) { type, fields ->
+            writeDescription(type, fields)
         }
 
     companion object {
