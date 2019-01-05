@@ -11,6 +11,7 @@ interface Command {
 
     /**
      * 命令缓存，使第二次查找具有 O(1) 复杂度
+     *
      * @param list 命令列表
      */
     class CommandMemory<C : Command>(private val list: Array<C>) {
@@ -37,6 +38,7 @@ interface Command {
     companion object {
         /**
          * 自动构造缓存
+         *
          * @param C 指令类型
          */
         inline fun <reified C> memoryOf() where C : Command, C : Enum<C> =

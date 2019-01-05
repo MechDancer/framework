@@ -11,6 +11,7 @@ import java.net.InetSocketAddress
 
 /**
  * 探针
+ *
  * @param group 组播地址和端口
  */
 class Probe(group: InetSocketAddress = Default.GROUP) {

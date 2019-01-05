@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 地址资源
+ *
  * 记录成员的地址和端口
  */
 class Addresses : UniqueComponent<Addresses>() {

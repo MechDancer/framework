@@ -34,7 +34,7 @@ class ConnectionServer(private val rule: Rule = Rule()) :
         return false
     }
 
-    /** 打开特定[port]接收TCP连接 */
+    /** 打开特定 [port] 接收TCP连接 */
     operator fun invoke(port: Int = 0) {
         servers[port]!!
             .accept()

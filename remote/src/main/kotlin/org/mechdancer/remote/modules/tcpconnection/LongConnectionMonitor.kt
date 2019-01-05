@@ -22,17 +22,17 @@ class LongConnectionMonitor :
     override fun sync(dependency: Component) =
         manager.sync(dependency)
 
-    /** 找到与[name]的连接或建立新的连接 */
+    /** 找到与 [name] 的连接或建立新的连接 */
     fun connect(name: String) =
         sockets.getOrSet(name) {
             client.connect(name, TcpCmd.Blocking)
         }
 
-    /** 关闭与[name]的连接 */
+    /** 关闭与 [name] 的连接 */
     fun close(name: String) =
         sockets.close(name)
 
-    /** 使用与[name]的连接通信 */
+    /** 使用与 [name] 的连接通信 */
     fun <T> process(name: String, block: (Socket) -> T): T? {
         val socket = connect(name) ?: return null
         return socket

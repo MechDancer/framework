@@ -9,6 +9,7 @@ import org.mechdancer.remote.modules.multicast.MulticastReceiver
 import org.mechdancer.remote.modules.multicast.PacketSlicer
 import org.mechdancer.remote.modules.tcpconnection.*
 import org.mechdancer.remote.resources.*
+import java.io.Closeable
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.Socket
@@ -23,7 +24,7 @@ class RemoteHub(
     sliceSize: Int,
     newMemberDetected: (String) -> Unit,
     additional: Iterable<Component>
-) {
+) : Closeable {
     // UDP 依赖项
 
     // 组成员资源
@@ -147,6 +148,10 @@ class RemoteHub(
     fun connectKeeping(name: String) =
         longConnectionMonitor.connect(name) != null
 
+    /** 关闭与 [name] 的长连接 */
+    fun closeConnection(name: String) =
+        longConnectionMonitor.close(name)
+
     /** 使用与 [name] 的连接 */
     fun <T> processConnection(name: String, block: (Socket) -> T) =
         longConnectionMonitor.process(name, block)
@@ -154,12 +159,15 @@ class RemoteHub(
     // service
 
     /** 阻塞等待 UDP 报文 */
-    operator
-
-    fun invoke() = receiver()
+    operator fun invoke() = receiver()
 
     /** 阻塞等待 TCP 连接 */
     fun accept() = server()
+
+    /** 关闭 */
+    override fun close() {
+        components.mapNotNull { it as? Closeable }.forEach { it.close() }
+    }
 
     private companion object {
         val randomName get() = "RemoteHub[${UUID.randomUUID()}]"
