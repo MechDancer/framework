@@ -61,7 +61,7 @@ class RemoteHub(
 
     private val scope = scope {
         // 名字
-        this += Name(name ?: randomName)
+        this += Name(name ?: "RemoteHub[${UUID.randomUUID()}]")
 
         // 组成员管理
         this += group   // 成员存在性资源
@@ -123,7 +123,15 @@ class RemoteHub(
     operator fun get(timeout: Int) = group[timeout]
 
     /** 查看远端 [name] 的地址和端口 */
-    operator fun get(name: String) = addresses[name]
+    operator fun get(name: String) =
+        group[name]?.let {
+            RemoteInfo(
+                name,
+                it,
+                addresses[name],
+                longConnectionSockets[name] != null
+            )
+        }
 
     // function
 
@@ -149,7 +157,7 @@ class RemoteHub(
         longConnectionMonitor.connect(name) != null
 
     /** 关闭与 [name] 的长连接 */
-    fun closeConnection(name: String) =
+    fun disconnect(name: String) =
         longConnectionMonitor.close(name)
 
     /** 使用与 [name] 的连接 */
@@ -166,10 +174,14 @@ class RemoteHub(
 
     /** 关闭 */
     override fun close() {
-        components.mapNotNull { it as? Closeable }.forEach { it.close() }
+        for (component in scope.components)
+            (component as? Closeable)?.close()
     }
 
-    private companion object {
-        val randomName get() = "RemoteHub[${UUID.randomUUID()}]"
-    }
+    data class RemoteInfo(
+        val name: String,
+        val lastSpeaking: Long,
+        val address: InetSocketAddress?,
+        val connected: Boolean
+    )
 }
