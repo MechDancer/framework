@@ -5,7 +5,7 @@ apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.2.1-dev-7"
+version = "0.2.1-dev-8"
 
 dependencies {
     compile(kotlin("stdlib"))
