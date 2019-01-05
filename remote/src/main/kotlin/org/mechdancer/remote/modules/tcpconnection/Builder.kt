@@ -40,8 +40,3 @@ fun mailListener(
     override fun equals(other: Any?) = false
     override fun hashCode() = TcpCmd.Mail.id.toInt()
 }
-
-/** 构造长连接服务器 */
-fun longConnectionListener(
-    block: (payload: ByteArray) -> ByteArray
-) = LongConnectionServer(block)

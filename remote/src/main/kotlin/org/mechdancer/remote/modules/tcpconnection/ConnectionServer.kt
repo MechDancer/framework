@@ -10,7 +10,7 @@ import org.mechdancer.remote.resources.TcpCmd
 import org.mechdancer.remote.resources.TcpFeedbackCmd
 
 /**
- * 短连接服务器
+ * TCP 连接服务器
  */
 class ConnectionServer(private val rule: Rule = Rule()) :
     UniqueComponent<ConnectionServer>(), Dependent {
@@ -32,26 +32,33 @@ class ConnectionServer(private val rule: Rule = Rule()) :
         return false
     }
 
+    /** 打开特定[port]接收TCP连接 */
     operator fun invoke(port: Int = 0) {
         servers[port]!!
             .accept()
-            .use { socket ->
-                val cmd = socket.listenCommand()
-                val client = socket.listenString()
+            .runCatching {
+                use { socket ->
+                    val cmd = socket.listenCommand()
+                    val client = socket.listenString()
 
-                if (rule decline client)
-                    socket say TcpFeedbackCmd.DECLINE
-                else when (cmd) {
-                    TcpCmd.Mail.id -> {
-                        val payload = socket.listen()
-                        for (listener in mailListener)
-                            listener.process(client, payload)
-                    }
-                    else           ->
-                        listeners[cmd]?.firstOrNull {
-                            it.process(client, socket)
+                    if (rule decline client)
+                        socket say TcpFeedbackCmd.DECLINE
+                    else when (cmd) {
+                        TcpCmd.Mail.id -> {
+                            val payload = socket.listen()
+                            for (listener in mailListener)
+                                listener.process(client, payload)
                         }
+                        else           ->
+                            listeners[cmd]?.firstOrNull {
+                                it.process(client, socket)
+                            }
+                    }
                 }
+            }
+            .onFailure {
+                System.err.println("an exception was caught during the connection:")
+                it.printStackTrace()
             }
     }
 }

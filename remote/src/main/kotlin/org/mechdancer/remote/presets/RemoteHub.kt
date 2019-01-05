@@ -13,6 +13,7 @@ import org.mechdancer.remote.modules.tcpconnection.PortBroadcaster
 import org.mechdancer.remote.modules.tcpconnection.PortMonitor
 import org.mechdancer.remote.resources.*
 import java.net.InetSocketAddress
+import java.net.NetworkInterface
 import java.net.Socket
 import java.util.*
 
@@ -95,9 +96,16 @@ class RemoteHub(
      * 尝试打开一个随机的网络端口，返回是否成功
      * 若当前已有打开的网络端口则不进行任何操作
      */
-    fun openOneNetwork() =
+    fun openFirst() =
         sockets.view.isNotEmpty()
             || null != networks.view.keys.firstOrNull()?.also { sockets[it] }
+
+    /**
+     * 尝试打开一个随机的网络端口，返回是否成功
+     * 若当前已有打开的网络端口则不进行任何操作
+     */
+    fun openFirst(block: (NetworkInterface) -> Boolean) =
+        null != networks.view.keys.firstOrNull(block)?.also { sockets[it] }
 
     /** 打开所有网络端口，返回实际打开的网络端口数量 */
     fun openAllNetworks(): Int {
