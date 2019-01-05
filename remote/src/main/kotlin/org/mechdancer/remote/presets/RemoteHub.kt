@@ -7,10 +7,7 @@ import org.mechdancer.remote.modules.group.GroupMonitor
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastReceiver
 import org.mechdancer.remote.modules.multicast.PacketSlicer
-import org.mechdancer.remote.modules.tcpconnection.ConnectionClient
-import org.mechdancer.remote.modules.tcpconnection.ConnectionServer
-import org.mechdancer.remote.modules.tcpconnection.PortBroadcaster
-import org.mechdancer.remote.modules.tcpconnection.PortMonitor
+import org.mechdancer.remote.modules.tcpconnection.*
 import org.mechdancer.remote.resources.*
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
@@ -54,9 +51,12 @@ class RemoteHub(
     // 组地址同步器
     private val synchronizer1 = PortBroadcaster()
     private val synchronizer2 = PortMonitor()
-    // 短连接建立
+    // TCP 连接
     private val client = ConnectionClient()
     private val server = ConnectionServer()
+    // TCP 长连接
+    private val longConnectionSockets = LongConnectionSockets()
+    private val longConnectionMonitor = LongConnectionMonitor()
 
     private val scope = scope {
         // 名字
@@ -79,9 +79,13 @@ class RemoteHub(
         this += synchronizer1 // 组地址同步器（答）
         this += synchronizer2 // 组地址同步器（问）
 
-        // TCP 短连接
+        // TCP 连接
         this += server // 服务端
         this += client // 客户端
+
+        // TCP 长连接
+        this += longConnectionSockets
+        this += longConnectionMonitor
 
         for (dependency in additional)
             this += dependency
@@ -139,10 +143,20 @@ class RemoteHub(
     fun <T> connect(name: String, cmd: Command, block: (Socket) -> T): T? =
         client.connect(name, cmd)?.use(block)
 
+    /** 与 [name] 建立长连接 */
+    fun connectKeeping(name: String) =
+        longConnectionMonitor.connect(name) != null
+
+    /** 使用与 [name] 的连接 */
+    fun <T> processConnection(name: String, block: (Socket) -> T) =
+        longConnectionMonitor.process(name, block)
+
     // service
 
     /** 阻塞等待 UDP 报文 */
-    operator fun invoke() = receiver()
+    operator
+
+    fun invoke() = receiver()
 
     /** 阻塞等待 TCP 连接 */
     fun accept() = server()

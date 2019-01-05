@@ -5,6 +5,7 @@ import org.mechdancer.dependency.Dependent
 import org.mechdancer.dependency.unique.UniqueComponent
 import org.mechdancer.dependency.unique.UniqueDependencyManager
 import org.mechdancer.remote.modules.group.Rule
+import org.mechdancer.remote.resources.LongConnectionSockets
 import org.mechdancer.remote.resources.ServerSockets
 import org.mechdancer.remote.resources.TcpCmd
 import org.mechdancer.remote.resources.TcpFeedbackCmd
@@ -18,13 +19,14 @@ class ConnectionServer(private val rule: Rule = Rule()) :
     private val manager = UniqueDependencyManager()
 
     private val servers by manager.must<ServerSockets>()
-    private val mailListener = mutableSetOf<MailListener>()
+    private val mailListeners = mutableSetOf<MailListener>()
+    private val longConnectionSockets by manager.must<LongConnectionSockets>()
     private val listeners = hashMapOf<Byte, MutableSet<ConnectionListener>>()
 
     override fun sync(dependency: Component): Boolean {
         manager.sync(dependency)
         if (dependency is MailListener)
-            mailListener.add(dependency)
+            mailListeners.add(dependency)
         if (dependency is ConnectionListener)
             listeners.compute(dependency.interest.id) { _, list ->
                 list?.apply { add(dependency) } ?: mutableSetOf(dependency)
@@ -44,12 +46,14 @@ class ConnectionServer(private val rule: Rule = Rule()) :
                     if (rule decline client)
                         socket say TcpFeedbackCmd.DECLINE
                     else when (cmd) {
-                        TcpCmd.Mail.id -> {
+                        TcpCmd.Mail.id     -> {
                             val payload = socket.listen()
-                            for (listener in mailListener)
+                            for (listener in mailListeners)
                                 listener.process(client, payload)
                         }
-                        else           ->
+                        TcpCmd.Blocking.id ->
+                            longConnectionSockets[client] = socket
+                        else               ->
                             listeners[cmd]?.firstOrNull {
                                 it.process(client, socket)
                             }
