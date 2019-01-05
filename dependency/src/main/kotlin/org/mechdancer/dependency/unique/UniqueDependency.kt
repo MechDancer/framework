@@ -7,9 +7,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.safeCast
 
 /**
- * 具体到类型 [T] 并依类型判别冲突的依赖项
- *   保存到组件实例的引用
- *   线程安全
+ * 依赖项
+ *
+ * 具体到类型 [T] 并依类型判别冲突
+ * 保存到组件实例的引用
+ * 线程安全
  */
 sealed class UniqueDependency<T : Component>(val type: KClass<T>) {
     private val _field = AtomicReference<T?>(null)

@@ -10,7 +10,8 @@ import kotlin.reflect.KProperty
 
 /**
  * 以类型区分的依赖项管理
- *   应聚合到 `Dependent` 内部
+ *
+ * 应聚合到 `Dependent` 内部
  */
 class UniqueDependencyManager {
     // 尚未装载的依赖项集

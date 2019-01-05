@@ -9,6 +9,7 @@ import java.io.OutputStream
 
 /**
  * 类型描述图
+ *
  *   complete description: { size: uv, struct: +(item description) }
  *     item   description: { typeName: String, fields: +(name: String, type: String, property: Byte), 0 }
  */

@@ -10,6 +10,7 @@ import java.io.OutputStream
 
 /**
  * 基本类型
+ *
  * 同时作为值类型，编解码时进行内联
  */
 internal enum class Basic(

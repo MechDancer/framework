@@ -2,6 +2,7 @@ package org.mechdancer.encoder.core.type
 
 /**
  * 字段描述
+ *
  * @param name     名字
  * @param type     类型名字
  * @param property 性质
