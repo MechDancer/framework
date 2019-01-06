@@ -9,6 +9,7 @@ version = "0.0.1-dev-3"
 
 dependencies {
     compile(kotlin("stdlib"))
+    compile(kotlin("reflect"))
     testCompile("junit", "junit", "+")
 }
 
