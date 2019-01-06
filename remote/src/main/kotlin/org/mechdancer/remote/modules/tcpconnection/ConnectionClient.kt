@@ -14,7 +14,6 @@ import java.net.SocketException
  * 短连接客户端
  */
 class ConnectionClient : UniqueComponent<ConnectionClient>(), Dependent {
-
     private val manager = UniqueDependencyManager()
 
     private val name by manager.must { it: Name -> it.field }

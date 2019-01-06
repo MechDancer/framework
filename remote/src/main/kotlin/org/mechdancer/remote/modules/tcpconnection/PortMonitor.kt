@@ -19,7 +19,6 @@ import org.mechdancer.remote.resources.UdpCmd
 class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
                     Dependent,
                     MulticastListener {
-
     private val manager = UniqueDependencyManager()
 
     private val broadcast by manager.must { it: MulticastBroadcaster -> it::broadcast }

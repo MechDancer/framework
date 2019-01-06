@@ -7,7 +7,7 @@ import org.mechdancer.remote.presets.RemoteDsl.Companion.remoteHub
 import org.mechdancer.remote.resources.TcpCmd
 import kotlin.concurrent.thread
 
-object Server {
+private object Server1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub("kotlin echo server") {
@@ -38,7 +38,7 @@ object Server {
     }
 }
 
-object Client {
+private object Client1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub("kotlin client") {
