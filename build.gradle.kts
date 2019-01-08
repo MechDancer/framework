@@ -16,6 +16,11 @@ buildscript {
 
 version = "v1.1.0"
 
+task<Delete>("clean") {
+    group = "build"
+    delete(rootProject.buildDir)
+}
+
 subprojects {
     group = "org.mechdancer"
 
@@ -42,11 +47,13 @@ subprojects {
     }
 
     task<Jar>("javadocJar") {
+        group = "build"
         classifier = "javadoc"
         from("$buildDir/javadoc")
     }
 
     task<Copy>("copyArtifacts") {
+        group = "build"
         from("$buildDir/libs")
         into("${rootProject.buildDir}/libs")
     }
