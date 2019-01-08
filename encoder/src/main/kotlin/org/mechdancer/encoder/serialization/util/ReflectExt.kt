@@ -3,7 +3,6 @@ package org.mechdancer.encoder.serialization.util
 import org.mechdancer.encoder.core.type.Field
 import org.mechdancer.encoder.core.type.Property
 import org.mechdancer.encoder.core.type.TypeGraph
-import org.mechdancer.encoder.serialization.annotation.Delegatee
 import org.mechdancer.encoder.serialization.annotation.Skip
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
@@ -56,7 +55,7 @@ fun KClass<*>.toTypeGraph(): TypeGraph<Map<String, List<Field>>> {
     val nonBasic = mutableListOf<KProperty<*>>()
 
     description[qualifiedName!!] = ArrayList(declaredMemberProperties.filterNot {
-        it.findAnnotation<Skip>() != null || it.findAnnotation<Delegatee>() != null
+        it.findAnnotation<Skip>() != null
     }.map {
         Field(
             it.name,
