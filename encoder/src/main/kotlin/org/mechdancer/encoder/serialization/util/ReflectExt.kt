@@ -15,7 +15,7 @@ import kotlin.reflect.jvm.jvmErasure
 private val basics = mapOf(
     Byte::class to "I1",
     Short::class to "I2",
-    Int::class to "I3",
+    Int::class to "I4",
     Long::class to "I8",
     Float::class to "F4",
     String::class to "S"
@@ -54,12 +54,12 @@ fun KClass<*>.toTypeGraph(): TypeGraph<Map<String, List<Field>>> {
 
     val nonBasic = mutableListOf<KProperty<*>>()
 
-    description[qualifiedName!!] = ArrayList(declaredMemberProperties.filterNot {
+    description[simpleName!!] = ArrayList(declaredMemberProperties.filterNot {
         it.findAnnotation<Skip>() != null
     }.map {
         Field(
             it.name,
-            it.returnType.toBasicTypeName() ?: it.returnType.jvmErasure.qualifiedName!!.apply { nonBasic.add(it) },
+            it.returnType.toBasicTypeName() ?: it.returnType.jvmErasure.simpleName!!.apply { nonBasic.add(it) },
             if (it.isArray()) Property.Array else Property.Unit
         )
     })
@@ -67,14 +67,14 @@ fun KClass<*>.toTypeGraph(): TypeGraph<Map<String, List<Field>>> {
     fun processNonBasic(c: List<KProperty<*>>) {
         val cache = mutableListOf<KProperty<*>>()
         c.forEach { p ->
-            description[p.returnType.jvmErasure.qualifiedName!!] =
+            description[p.returnType.jvmErasure.simpleName!!] =
                     ArrayList(p.returnType.jvmErasure.declaredMemberProperties.filter {
                         it.findAnnotation<Skip>() == null
                     }.map {
                         Field(
                             it.name,
                             it.returnType.toBasicTypeName()
-                                ?: it.returnType.jvmErasure.qualifiedName!!.apply { cache.add(it) },
+                                ?: it.returnType.jvmErasure.simpleName!!.apply { cache.add(it) },
                             if (it.isArray()) Property.Array else Property.Unit
                         )
                     })
