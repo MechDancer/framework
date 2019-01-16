@@ -16,6 +16,8 @@ enum class UdpCmd(override val id: Byte) : Command {
     ADDRESS_ACK(3),
     /** 包分片 */
     PACKET_SLICE(4),
+    /** 话题消息 */
+    TOPIC_MESSAGE(5),
     /** 通用广播 */
     COMMON(127);
 

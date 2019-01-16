@@ -29,6 +29,7 @@ class Networks : UniqueComponent<Networks>() {
             .filter(NetworkInterface::supportsMulticast)
             .notLoopback()
             .notDocker()
+            .notVmware()
             .mapNotNull { network ->
                 network
                     .interfaceAddresses
@@ -52,6 +53,12 @@ class Networks : UniqueComponent<Networks>() {
         fun Sequence<NetworkInterface>.notDocker() =
             filterNot {
                 fun check(it: String) = "docker" in it.toLowerCase()
+                check(it.name) || check(it.displayName)
+            }
+
+        fun Sequence<NetworkInterface>.notVmware() =
+            filterNot {
+                fun check(it: String) = "vmware" in it.toLowerCase()
                 check(it.name) || check(it.displayName)
             }
 
