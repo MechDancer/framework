@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream
 
 fun main() {
     val root = "pose"
-    val graph = DataGraph(
+    val graph = DataGraph.create(
         root to setOf(
             FieldData("location", "vector2D", 1),
             FieldData("direction", Basic.F8.name, 2.0)

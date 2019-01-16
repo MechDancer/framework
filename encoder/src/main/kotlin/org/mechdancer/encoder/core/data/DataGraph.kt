@@ -36,7 +36,7 @@ class DataGraph<T : Map<Data, Iterable<FieldData>>>(
          * @param data   邻接表 { name: String, fields: +(field data) }
          * @param struct 结构描述表
          */
-        operator fun invoke(
+        fun create(
             vararg data: Pair<String, Iterable<FieldData>>,
             struct: (String) -> Iterable<Field>
         ) = DataGraph(
