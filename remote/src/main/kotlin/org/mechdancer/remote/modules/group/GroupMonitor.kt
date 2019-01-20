@@ -39,7 +39,7 @@ class GroupMonitor(
         if (name.isNotBlank()) // 只保存非匿名对象
             update(name)
                 ?.takeUnless { System.currentTimeMillis() - it > timeout }
-                ?: detected(name)
+            ?: detected(name)
 
         if (cmd == UdpCmd.YELL_ASK.id) // 回应询问
             broadcaster?.broadcast(UdpCmd.YELL_ACK)

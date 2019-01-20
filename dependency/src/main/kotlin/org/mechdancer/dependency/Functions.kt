@@ -36,4 +36,4 @@ fun KClass<*>.firstGenericType(upper: KClass<*>) =
         ?.mapNotNull { it as? Class<*> }
         ?.find { t -> upper.java.isAssignableFrom(t) }
         ?.kotlin
-        ?: throw RuntimeException("Unable to find component type.")
+    ?: throw RuntimeException("Unable to find component type.")
