@@ -21,7 +21,7 @@ class NamedDependencyManager {
     // 添加依赖项到集合，发生冲突时产生异常
     private fun <T : Component> add(name: String, dependency: TypeSafeDependency<T>, type: KClass<T>) =
         synchronized(dependencies) {
-            if (dependencies.add(Stub(name, dependency)))
+            if (!dependencies.add(Stub(name, dependency)))
                 throw RuntimeException("try to add the second ${type.qualifiedName}")
         }
 
