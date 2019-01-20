@@ -1,6 +1,7 @@
 package org.mechdancer.dependency.unique
 
 import org.mechdancer.dependency.Component
+import org.mechdancer.dependency.DependencyManager
 import org.mechdancer.dependency.Dependent
 import org.mechdancer.dependency.TypeSafeDependency
 import org.mechdancer.dependency.TypeSafeDependency.Dependency
@@ -14,7 +15,7 @@ import kotlin.reflect.KProperty
  *
  * 应聚合到 `Dependent` 内部
  */
-class UniqueDependencyManager {
+class UniqueDependencyManager : DependencyManager {
     // 尚未装载的依赖项集
     private val dependencies = hashSetOf<TypeSafeDependency<*>>()
 
@@ -26,7 +27,7 @@ class UniqueDependencyManager {
         }
 
     /** 每一次扫描都清除成功装载的依赖项 */
-    fun sync(dependency: Component) =
+    override fun sync(dependency: Component) =
         synchronized(dependencies) {
             dependencies.removeIf { it.set(dependency) != null } && dependencies.isEmpty()
         }

@@ -1,6 +1,7 @@
 package org.mechdancer.dependency.named
 
 import org.mechdancer.dependency.Component
+import org.mechdancer.dependency.DependencyManager
 import org.mechdancer.dependency.Dependent
 import org.mechdancer.dependency.TypeSafeDependency
 import org.mechdancer.dependency.TypeSafeDependency.Dependency
@@ -14,7 +15,7 @@ import kotlin.reflect.KProperty
  *
  * 应聚合到 `Dependent` 内部
  */
-class NamedDependencyManager {
+class NamedDependencyManager : DependencyManager {
     // 尚未装载的依赖项集
     private val dependencies = hashSetOf<Stub<*>>()
 
@@ -26,11 +27,11 @@ class NamedDependencyManager {
         }
 
     /** 每一次扫描都清除成功装载的依赖项 */
-    fun sync(dependency: Component) =
+    override fun sync(dependency: Component) =
         synchronized(dependencies) {
             val maybe = dependency as? NamedComponent<*> ?: return dependencies.isEmpty()
             dependencies.removeIf { it.name == maybe.name && it.dependency.set(maybe) != null }
-            && dependencies.isEmpty()
+                    && dependencies.isEmpty()
         }
 
     /** 构造一个 [C] 类型的强依赖 */
