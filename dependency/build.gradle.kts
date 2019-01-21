@@ -10,6 +10,8 @@ version = "0.1.0-rc-1"
 dependencies {
     compile(kotlin("stdlib"))
     compile(kotlin("reflect"))
+
+    testCompile("junit", "junit", "4.12")
 }
 
 task<Jar>("sourcesJar") {

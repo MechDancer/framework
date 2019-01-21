@@ -7,6 +7,8 @@ package org.mechdancer.dependency
  * 因此当一个新的依赖项到达，依赖者会得到通知，直到所有依赖项都集齐为止
  */
 interface Dependent : Component {
-    /** 为依赖者添加一个新的依赖项，并返回是否已获得全部依赖项 */
+    /**
+     * 为依赖者添加一个新的依赖项，并返回是否已获得全部依赖项
+     */
     fun sync(dependency: Component): Boolean
 }
