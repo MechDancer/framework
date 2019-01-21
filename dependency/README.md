@@ -90,7 +90,7 @@ repositories {
     jcenter()
 }
 dependencies {
-    compile 'org.mechdancer:dependency:0.1.0-rc-1'
+    compile 'org.mechdancer:dependency:0.1.0-rc-2'
 }
 ```
 
@@ -108,7 +108,7 @@ dependencies {
 <dependency>
   <groupId>org.mechdancer</groupId>
   <artifactId>dependency</artifactId>
-  <version>0.1.0-rc-1</version>
+  <version>0.1.0-rc-2</version>
   <type>pom</type>
 </dependency>
 ```

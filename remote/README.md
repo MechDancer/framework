@@ -102,7 +102,7 @@ repositories {
     jcenter()
 }
 dependencies {
-    compile 'org.mechdancer:remote:0.2.1-dev-6'
+    compile 'org.mechdancer:remote:0.2.1-dev-8'
 }
 ```
 
