@@ -2,7 +2,7 @@ package org.mechdancer.remote.modules.multicast
 
 import org.mechdancer.dependency.Component
 import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
+import org.mechdancer.dependency.UniqueComponent
 import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.protocol.SimpleInputStream
 import org.mechdancer.remote.protocol.SimpleOutputStream

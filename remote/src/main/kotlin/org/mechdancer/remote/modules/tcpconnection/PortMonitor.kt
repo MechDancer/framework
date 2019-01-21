@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastListener
 import org.mechdancer.remote.protocol.RemotePacket
@@ -19,9 +16,9 @@ import org.mechdancer.remote.resources.UdpCmd
 class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
                     Dependent,
                     MulticastListener {
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
-    private val broadcast by manager.must { it: MulticastBroadcaster -> it::broadcast }
+    private val broadcast by manager.mustUnique { it: MulticastBroadcaster -> it::broadcast }
     private val addresses by manager.must<Addresses>()
 
     override fun sync(dependency: Component) = manager.sync(dependency)

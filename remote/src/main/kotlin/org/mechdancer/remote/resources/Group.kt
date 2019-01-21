@@ -1,7 +1,7 @@
 package org.mechdancer.remote.resources
 
+import org.mechdancer.dependency.UniqueComponent
 import org.mechdancer.dependency.buildView
-import org.mechdancer.dependency.unique.UniqueComponent
 import java.util.concurrent.ConcurrentHashMap
 
 /** 成员存在性资源 */

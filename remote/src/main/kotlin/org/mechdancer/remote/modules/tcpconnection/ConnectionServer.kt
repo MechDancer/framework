@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.resources.LongConnectionSockets
 import org.mechdancer.remote.resources.ServerSockets
@@ -15,7 +12,7 @@ import org.mechdancer.remote.resources.TcpCmd
 class ConnectionServer(private val rule: Rule = Rule()) :
     UniqueComponent<ConnectionServer>(), Dependent {
 
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
     private val servers by manager.must<ServerSockets>()
     private val mailListeners = mutableSetOf<MailListener>()

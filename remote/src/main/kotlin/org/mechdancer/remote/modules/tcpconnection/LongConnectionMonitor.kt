@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.resources.LongConnectionSockets
 import org.mechdancer.remote.resources.TcpCmd
 import java.net.Socket
@@ -14,7 +11,7 @@ import java.net.Socket
 class LongConnectionMonitor :
     UniqueComponent<LongConnectionMonitor>(),
     Dependent {
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
     private val client by manager.must<ConnectionClient>()
     private val sockets by manager.must<LongConnectionSockets>()

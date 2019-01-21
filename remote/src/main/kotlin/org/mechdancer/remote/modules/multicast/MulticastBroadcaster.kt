@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.multicast
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.protocol.SimpleOutputStream
 import org.mechdancer.remote.protocol.writeEnd
 import org.mechdancer.remote.resources.Command
@@ -18,7 +15,7 @@ import java.net.DatagramPacket
 class MulticastBroadcaster(size: Int = 0x4000) :
     UniqueComponent<MulticastBroadcaster>(), Dependent {
 
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
     private val name by manager.maybe("") { it: Name -> it.field } // 可以匿名发送组播
     private val slicer by manager.maybe<PacketSlicer>()

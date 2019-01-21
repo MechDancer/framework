@@ -1,7 +1,7 @@
 package org.mechdancer.remote.resources
 
+import org.mechdancer.dependency.UniqueComponent
 import org.mechdancer.dependency.buildView
-import org.mechdancer.dependency.unique.UniqueComponent
 import java.io.Closeable
 import java.net.ServerSocket
 import java.util.concurrent.ConcurrentHashMap

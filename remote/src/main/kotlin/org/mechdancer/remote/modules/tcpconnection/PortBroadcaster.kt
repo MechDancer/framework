@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastListener
 import org.mechdancer.remote.protocol.RemotePacket
@@ -20,11 +17,11 @@ class PortBroadcaster : UniqueComponent<PortBroadcaster>(),
                         Dependent,
                         MulticastListener {
 
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
-    private val name by manager.must { it: Name -> it.field }
-    private val broadcast by manager.must { it: MulticastBroadcaster -> it::broadcast }
-    private val port by manager.must { it: ServerSockets -> it.default.localPort }
+    private val name by manager.mustUnique { it: Name -> it.field }
+    private val broadcast by manager.mustUnique { it: MulticastBroadcaster -> it::broadcast }
+    private val port by manager.mustUnique { it: ServerSockets -> it.default.localPort }
 
     override fun sync(dependency: Component) = manager.sync(dependency)
 

@@ -1,7 +1,7 @@
 package org.mechdancer.remote.resources
 
+import org.mechdancer.dependency.UniqueComponent
 import org.mechdancer.dependency.buildView
-import org.mechdancer.dependency.unique.UniqueComponent
 import java.net.Inet4Address
 import java.net.InterfaceAddress
 import java.net.NetworkInterface

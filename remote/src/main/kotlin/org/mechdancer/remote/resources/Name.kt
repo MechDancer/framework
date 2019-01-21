@@ -1,6 +1,6 @@
 package org.mechdancer.remote.resources
 
-import org.mechdancer.dependency.unique.UniqueComponent
+import org.mechdancer.dependency.UniqueComponent
 
 class Name private constructor(val field: String) : UniqueComponent<Name>() {
     companion object {

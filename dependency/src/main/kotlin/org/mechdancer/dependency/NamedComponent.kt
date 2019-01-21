@@ -1,7 +1,5 @@
-package org.mechdancer.dependency.named
+package org.mechdancer.dependency
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.firstGenericType
 import kotlin.reflect.KClass
 import kotlin.reflect.full.safeCast
 

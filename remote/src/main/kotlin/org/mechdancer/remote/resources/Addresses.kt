@@ -1,6 +1,6 @@
 package org.mechdancer.remote.resources
 
-import org.mechdancer.dependency.unique.UniqueComponent
+import org.mechdancer.dependency.UniqueComponent
 import java.net.Inet4Address
 import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap

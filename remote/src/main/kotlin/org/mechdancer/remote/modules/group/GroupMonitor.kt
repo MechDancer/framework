@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.group
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastListener
 import org.mechdancer.remote.protocol.RemotePacket
@@ -21,9 +18,9 @@ class GroupMonitor(
     private val timeout: Int = Int.MAX_VALUE
 ) : UniqueComponent<GroupMonitor>(), Dependent, MulticastListener {
 
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
-    private val update by manager.must { it: Group -> it::detect }
+    private val update by manager.mustUnique { it: Group -> it::detect }
     private val broadcaster by manager.maybe<MulticastBroadcaster>()
 
     override fun sync(dependency: Component) = manager.sync(dependency)

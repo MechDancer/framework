@@ -1,8 +1,6 @@
 package org.mechdancer.remote.modules.multicast
 
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.protocol.SimpleInputStream
@@ -21,7 +19,7 @@ class MulticastReceiver(
     private val bufferSize: Int = 65536,
     private val rule: Rule = Rule()
 ) : UniqueComponent<MulticastReceiver>(), Dependent {
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
     // 线程独立缓冲
     private val buffer = ThreadLocal<DatagramPacket>()

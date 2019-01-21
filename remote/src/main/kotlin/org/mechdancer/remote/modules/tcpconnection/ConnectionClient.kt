@@ -1,9 +1,6 @@
 package org.mechdancer.remote.modules.tcpconnection
 
-import org.mechdancer.dependency.Component
-import org.mechdancer.dependency.Dependent
-import org.mechdancer.dependency.unique.UniqueComponent
-import org.mechdancer.dependency.unique.UniqueDependencyManager
+import org.mechdancer.dependency.*
 import org.mechdancer.remote.resources.Addresses
 import org.mechdancer.remote.resources.Command
 import org.mechdancer.remote.resources.Name
@@ -14,9 +11,9 @@ import java.net.SocketException
  * 短连接客户端
  */
 class ConnectionClient : UniqueComponent<ConnectionClient>(), Dependent {
-    private val manager = UniqueDependencyManager()
+    private val manager = DependencyManager()
 
-    private val name by manager.must { it: Name -> it.field }
+    private val name by manager.mustUnique { it: Name -> it.field }
     private val addresses by manager.must<Addresses>()
     private val ask by manager.maybe(null) { it: PortMonitor -> it::ask }
 
