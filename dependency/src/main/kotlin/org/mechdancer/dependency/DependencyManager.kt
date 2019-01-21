@@ -8,14 +8,11 @@ import kotlin.reflect.KProperty
 
 class DependencyManager {
     // 尚未装载的依赖项集
-    private val dependencies = hashSetOf<TypeSafeDependency<*>>()
+    private val dependencies = mutableListOf<TypeSafeDependency<*>>()
 
     // 添加依赖项到集合，发生冲突时产生异常
     private fun <T : Component> add(dependency: TypeSafeDependency<T>, type: KClass<T>) =
-        synchronized(dependencies) {
-            if (!dependencies.add(dependency))
-                throw RuntimeException("try to add the second ${type.qualifiedName}")
-        }
+        synchronized(dependencies) { dependencies.add(dependency) }
 
     /** 每一次扫描都清除成功装载的依赖项 */
     fun sync(dependency: Component) =

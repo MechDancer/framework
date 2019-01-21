@@ -3,8 +3,9 @@ package org.mechdancer.dependency
 import org.junit.Assert
 import org.junit.Test
 
-
-class E(name: String) : NamedComponent<E>(name)
+class E(name: String) : NamedComponent<E>(name) {
+    val value = 20
+}
 
 object F : UniqueComponent<F>()
 
@@ -18,7 +19,8 @@ class D : Dependent {
 
     val error by manager.maybe<E>("error")
 
-    val truly by manager.must<E>("E")
+    val truly by manager.mustNamed("E") { e: E -> e.name }
+    val value by manager.mustNamed("E") { e: E -> e.value }
 
     val f by manager.must<F>()
 }
@@ -31,9 +33,11 @@ class TestManager {
         scope {
             this += e
             this += d
+            this += F
         }
         Assert.assertEquals(d.error, null)
-        Assert.assertEquals(d.truly, e)
+        Assert.assertEquals(d.truly, "E")
+        Assert.assertEquals(d.value, 20)
         Assert.assertEquals(d.f, F)
     }
 }
