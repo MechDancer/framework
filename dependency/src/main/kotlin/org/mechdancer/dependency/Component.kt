@@ -7,6 +7,9 @@ package org.mechdancer.dependency
  * 因此组件可以安全快捷地保存到一个哈希集合中
  */
 interface Component {
+
     override fun equals(other: Any?): Boolean
+
     override fun hashCode(): Int
+
 }

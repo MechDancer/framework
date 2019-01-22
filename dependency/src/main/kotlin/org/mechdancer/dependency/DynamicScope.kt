@@ -24,8 +24,9 @@ open class DynamicScope {
 
     /**
      * 将一个新的组件加入到动态域，返回是否成功添加
-     * @return 若组件被添加到域，返回`true`
-     *         与已有的组件发生冲突时返回`false`
+     *
+     * @return 若组件被添加到域，返回 `true`
+     *         与已有的组件发生冲突时返回 `false`
      */
     open infix fun setup(component: Component) =
         _components
