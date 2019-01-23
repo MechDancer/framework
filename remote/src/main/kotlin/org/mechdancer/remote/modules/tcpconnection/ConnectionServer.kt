@@ -33,21 +33,20 @@ class ConnectionServer(private val rule: Rule = Rule()) :
     /** 打开特定 [port] 接收TCP连接 */
     operator fun invoke(port: Int = 0) {
         val socket = servers[port]!!.accept()
-        var cmd: TcpCmd? = null
+        var cmd: Byte? = null
         try {
-            cmd = TcpCmd[socket.listenCommand()]
+            cmd = socket.listenCommand()
             val client = socket.listenString()
             when (cmd) {
-                TcpCmd.Mail     ->
+                TcpCmd.Mail.id     ->
                     socket.listen().let { payload ->
                         for (listener in mailListeners)
                             listener.process(client, payload)
                     }
-                TcpCmd.Blocking ->
+                TcpCmd.Blocking.id ->
                     longConnectionSockets[client] = socket
-                null            -> Unit
-                else            ->
-                    listeners[cmd.id]?.firstOrNull {
+                else               ->
+                    listeners[cmd]?.firstOrNull {
                         it.process(client, socket)
                     }
             }
@@ -55,7 +54,7 @@ class ConnectionServer(private val rule: Rule = Rule()) :
             System.err.println("an exception was caught during the connection:")
             e.printStackTrace()
         } finally {
-            if (cmd != TcpCmd.Blocking) socket.close()
+            if (cmd != TcpCmd.Blocking.id) socket.close()
         }
     }
 }
