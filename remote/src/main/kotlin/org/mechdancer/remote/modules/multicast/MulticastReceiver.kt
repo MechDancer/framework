@@ -35,7 +35,7 @@ class MulticastReceiver(
     // 地址管理
     private val addresses by manager.maybe<Addresses>()
 
-    override fun sync(dependency: org.mechdancer.dependency.Component): Boolean {
+    override fun sync(dependency: Component): Boolean {
         manager.sync(dependency)
         if (dependency is MulticastListener) listeners.add(dependency)
         return false
@@ -58,7 +58,8 @@ class MulticastReceiver(
             ?.find { (_, it) -> it match address }
             ?.let { (network, _) -> sockets[network] }
 
-        addresses?.set(sender, address)
+        addresses
+            ?.set(sender, address)
 
         return RemotePacket(
             sender = sender,
@@ -68,7 +69,7 @@ class MulticastReceiver(
             listeners
                 .filter {
                     it.interest.isEmpty()
-                        || pack.command in it.interest.map(Command::id)
+                    || pack.command in it.interest.map(Command::id)
                 }
                 .forEach { it process pack }
         }
