@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.17")
         classpath("com.novoda:bintray-release:+")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.11")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20")
     }
 }
 
