@@ -102,7 +102,7 @@ repositories {
     jcenter()
 }
 dependencies {
-    compile 'org.mechdancer:remote:0.2.1-dev-10'
+    compile 'org.mechdancer:remote:0.2.1-dev-11'
 }
 ```
 
@@ -120,7 +120,7 @@ dependencies {
 <dependency>
   <groupId>org.mechdancer</groupId>
   <artifactId>remote</artifactId>
-  <version>0.2.1-dev-10</version>
+  <version>0.2.1-dev-11</version>
   <type>pom</type>
 </dependency>
 ```

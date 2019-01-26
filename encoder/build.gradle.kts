@@ -1,11 +1,10 @@
 import com.novoda.gradle.release.PublishExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.0.1-dev-3"
+version = "0.0.1-dev-4"
 
 dependencies {
     compile(kotlin("stdlib"))

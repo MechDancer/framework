@@ -11,7 +11,7 @@ before_install:
 
 script:
   # 清理、生成、测试、文档
-  - ./gradlew clean build
+  - ./gradlew clean dokka build
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
