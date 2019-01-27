@@ -3,6 +3,11 @@ package org.mechdancer.dependency
 import kotlin.reflect.KClass
 import kotlin.reflect.full.safeCast
 
+/**
+ * 具名组件
+ *
+ * 同类型且同名的组件不可共存
+ */
 abstract class NamedComponent<T : NamedComponent<T>>
     (val name: String, type: KClass<T>? = null) : Component {
 

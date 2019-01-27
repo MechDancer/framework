@@ -6,12 +6,15 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
+/**
+ * 典型依赖管理器
+ */
 class DependencyManager {
     // 尚未装载的依赖项集
     private val dependencies = mutableListOf<TypeSafeDependency<*>>()
 
     // 添加依赖项到集合，发生冲突时产生异常
-    private fun <T : Component> add(dependency: TypeSafeDependency<T>, type: KClass<T>) =
+    private fun <T : Component> add(dependency: TypeSafeDependency<T>) =
         synchronized(dependencies) { dependencies.add(dependency) }
 
     /** 每一次扫描都清除成功装载的依赖项 */
@@ -22,11 +25,11 @@ class DependencyManager {
 
     /** 构造一个 [C] 类型的强依赖 */
     fun <C : Component> dependOnStrict(type: KClass<C>, predicate: (C) -> Boolean) =
-        Dependency(type, predicate).also { add(it, type) }
+        Dependency(type, predicate).also { add(it) }
 
     /** 构造一个 [C] 类型的弱依赖 */
     fun <C : Component> dependOnWeak(type: KClass<C>, predicate: (C) -> Boolean) =
-        WeakDependency(type, predicate).also { add(it, type) }
+        WeakDependency(type, predicate).also { add(it) }
 
     /** 构造一个 [C] 类型的强依赖 */
     inline fun <reified C : Component> dependency(noinline predicate: (C) -> Boolean) =

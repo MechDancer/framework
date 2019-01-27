@@ -4,11 +4,9 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.safeCast
 
 /**
- * 抽象组件
+ * 唯一组件
  *
- * 封装了默认的哈希函数和判等条件
- * 需要实现类提供自己的具体类型 [type]
- * 泛型 [T] 可保证此类型来自这个实现类
+ * 同类型的组件不能共存
  */
 abstract class UniqueComponent<T : UniqueComponent<T>>
     (type: KClass<T>? = null) : Component {

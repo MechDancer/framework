@@ -8,7 +8,7 @@ import java.io.DataOutputStream
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-fun main(args: Array<String>) {
+fun main() {
     val remote = remoteHub("kotlin topic server")
     remote.openAllNetworks()
 
