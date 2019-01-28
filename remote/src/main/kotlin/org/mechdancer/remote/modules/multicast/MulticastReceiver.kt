@@ -2,6 +2,7 @@ package org.mechdancer.remote.modules.multicast
 
 import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.ScopeLogger
+import org.mechdancer.remote.modules.group.GroupMonitor
 import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.protocol.SimpleInputStream
@@ -28,6 +29,8 @@ class MulticastReceiver(
     private val name by manager.maybe("") { it: Name -> it.field }
     // 接收套接字
     private val sockets by manager.must<MulticastSockets>()
+    // 组成员管理
+    private val groupMonitor by manager.maybe<GroupMonitor>()
     // 处理回调
     private val listeners = mutableSetOf<MulticastListener>()
 
@@ -46,6 +49,7 @@ class MulticastReceiver(
     }
 
     operator fun invoke(): RemotePacket? {
+        logger?.debug("waiting for multicast packet...")
         val packet = buffer
             .getOrSet { DatagramPacket(ByteArray(bufferSize), bufferSize) }
             .apply(sockets.default::receive)
@@ -55,22 +59,23 @@ class MulticastReceiver(
 
         if (sender == name || rule decline sender) return null
 
+        val command = stream.read().toByte()
         val address = packet.address as Inet4Address
-
+        // 更新组成员信息
+        groupMonitor?.detect(sender, name.isNotBlank() && command == UdpCmd.ADDRESS_ASK.id)
+        // 更新地址认识
+        addresses?.set(sender, address)
+        // 打开对应网络
         networks
             ?.toList()
             ?.find { (_, it) -> it match address }
             ?.let { (network, _) -> sockets[network] }
 
-        addresses?.set(sender, address)
-
-        return RemotePacket(
-            sender = sender,
-            command = stream.read().toByte(),
-            payload = stream.lookRest())
+        return RemotePacket(sender, command, stream.lookRest())
             .also { logger?.debug("received $it on $address") }
             .also { pack ->
                 listeners
+                    .asSequence()
                     .filter {
                         it.interest.isEmpty()
                         || pack.command in it.interest.map(Command::id)

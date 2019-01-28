@@ -18,7 +18,6 @@ private object Server1 {
                         .endsWith("client") // 只接受名称符合规则的连接
                         .also {
                             if (it) {
-                                println("- $client connected")
                                 while (true) {
                                     val msg = I.listenString()
                                     println("- hear $msg")
@@ -45,7 +44,6 @@ private object Client1 {
         hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
         while (null == hub.connect("kotlin echo server", TcpCmd.COMMON) {
-                println("- connected")
                 while (true) {
                     val msg = readLine()!!
                     it.say(msg)

@@ -19,9 +19,9 @@ class PortBroadcaster : UniqueComponent<PortBroadcaster>(),
 
     private val manager = DependencyManager()
 
-    private val name by manager.mustUnique { it: Name -> it.field }
-    private val broadcast by manager.mustUnique { it: MulticastBroadcaster -> it::broadcast }
-    private val port by manager.mustUnique { it: ServerSockets -> it.default.localPort }
+    private val name by manager.mustUnique { x: Name -> x.field }
+    private val broadcast by manager.mustUnique { x: MulticastBroadcaster -> x::broadcast }
+    private val port by manager.mustUnique { x: ServerSockets -> x.default.localPort }
 
     override fun sync(dependency: Component) = manager.sync(dependency)
 

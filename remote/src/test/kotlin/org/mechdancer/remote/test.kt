@@ -13,9 +13,11 @@ fun main() {
     remote.openAllNetworks()
 
     thread {
+        var x = 0f
+        var y = 0f
         while (true) {
-            val x = 10 * Random.nextFloat()
-            val y = 10 * Random.nextFloat()
+            x += 10 * Random.nextFloat() - 5
+            y += 10 * Random.nextFloat() - 5
             println("0 -> x: $x, y: $y")
             ByteArrayOutputStream()
                 .apply {
@@ -25,7 +27,7 @@ fun main() {
                 }
                 .toByteArray()
                 .let { remote.broadcast(UdpCmd.TOPIC_MESSAGE, it) }
-            Thread.sleep(1000)
+            Thread.sleep(50)
         }
     }
 }
