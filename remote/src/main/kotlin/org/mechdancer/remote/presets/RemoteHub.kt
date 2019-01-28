@@ -3,12 +3,14 @@ package org.mechdancer.remote.presets
 import org.mechdancer.dependency.Component
 import org.mechdancer.dependency.plusAssign
 import org.mechdancer.dependency.scope
+import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.group.GroupMonitor
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastReceiver
 import org.mechdancer.remote.modules.multicast.PacketSlicer
 import org.mechdancer.remote.modules.tcpconnection.*
 import org.mechdancer.remote.resources.*
+import org.slf4j.Logger
 import java.io.Closeable
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
@@ -20,22 +22,26 @@ import java.util.*
  */
 class RemoteHub(
     name: String?,
-    address: InetSocketAddress,
+    group: InetSocketAddress,
     sliceSize: Int,
+    loggerSetting: Logger.() -> Unit,
     newMemberDetected: (String) -> Unit,
     additional: Iterable<Component>
 ) : Closeable {
-    // UDP 依赖项
+
+    // region members
+
+    // region UDP
 
     // 组成员资源
-    private val group = Group()
+    private val _group = Group()
     // 组成员管理
     private val monitor = GroupMonitor(newMemberDetected)
 
     // 网络接口资源
     private val networks = Networks()
     // 组播套接字
-    private val sockets = MulticastSockets(address)
+    private val sockets = MulticastSockets(group)
     // 组播发送器
     private val broadcaster = MulticastBroadcaster(sliceSize)
     // 组播接收器
@@ -43,7 +49,9 @@ class RemoteHub(
     // 组播分片协议
     private val slicer = PacketSlicer()
 
-    // TCP 依赖项
+    // endregion
+
+    // region TCP
 
     // 组地址资源
     private val addresses = Addresses()
@@ -59,12 +67,15 @@ class RemoteHub(
     private val longConnectionSockets = LongConnectionSockets()
     private val longConnectionMonitor = LongConnectionMonitor()
 
+    // endregion
+
     private val scope = scope {
         // 名字
-        this += Name(name ?: "RemoteHub[${UUID.randomUUID()}]")
+        val actualName = name ?: "RemoteHub[${UUID.randomUUID()}]"
+        this += Name(actualName)
 
         // 组成员管理
-        this += group   // 成员存在性资源
+        this += _group  // 成员存在性资源
         this += monitor // 组成员管理
 
         // 组播
@@ -88,43 +99,28 @@ class RemoteHub(
         this += longConnectionSockets
         this += longConnectionMonitor
 
+        // 日志器
+        this += ScopeLogger(actualName, loggerSetting)
+
         for (dependency in additional)
             this += dependency
     }
 
-    // access
+    // endregion
+
+    // region methods
+
+    // region access
 
     /** 浏览全部依赖项 */
     val components get() = scope.components
 
-    /**
-     * 尝试打开一个随机的网络端口，返回是否成功
-     * 若当前已有打开的网络端口则不进行任何操作
-     */
-    fun openFirst() =
-        sockets.view.isNotEmpty()
-            || null != networks.view.keys.firstOrNull()?.also { sockets[it] }
-
-    /**
-     * 尝试打开一个随机的网络端口，返回是否成功
-     * 若当前已有打开的网络端口则不进行任何操作
-     */
-    fun openFirst(block: (NetworkInterface) -> Boolean) =
-        null != networks.view.keys.firstOrNull(block)?.also { sockets[it] }
-
-    /** 打开所有网络端口，返回实际打开的网络端口数量 */
-    fun openAllNetworks(): Int {
-        for (network in networks.view.keys)
-            sockets[network]
-        return sockets.view.size
-    }
-
     /** 查看超时时间 [timeout] 内出现的组成员 */
-    operator fun get(timeout: Int) = group[timeout]
+    operator fun get(timeout: Int) = _group[timeout]
 
     /** 查看远端 [name] 的地址和端口 */
     operator fun get(name: String) =
-        group[name]?.let {
+        _group[name]?.let {
             RemoteInfo(
                 name,
                 it,
@@ -133,7 +129,56 @@ class RemoteHub(
             )
         }
 
-    // function
+    // endregion
+
+    // region networks
+
+    /**
+     * 尝试打开一个随机的网络端口，返回是否成功
+     * 若当前已有打开的网络端口则不进行任何操作
+     */
+    fun openFirstNetwork() =
+        sockets.view.isNotEmpty()
+        || null != networks.view.keys.firstOrNull()?.also { sockets[it] }
+
+    /**
+     * 尝试打开一个随机的网络端口，返回是否成功
+     * 若当前已有打开的网络端口则不进行任何操作
+     */
+    fun openFirstNetwork(block: (NetworkInterface) -> Boolean) =
+        sockets.view.keys.any(block)
+        || null != networks.view.keys.firstOrNull(block)?.also { sockets[it] }
+
+    /**
+     * 尝试打开一个随机的网络端口，返回是否成功
+     * 若当前已有打开的网络端口则不进行任何操作
+     */
+    fun openAllNetworks(block: (NetworkInterface) -> Boolean): Int {
+        for (network in networks.view.keys.filter(block))
+            sockets[network]
+        return sockets.view.size
+    }
+
+    /** 打开所有网络端口，返回实际打开的网络端口数量 */
+    fun openAllNetworks(): Int {
+        for (network in networks.view.keys)
+            sockets[network]
+        return sockets.view.size
+    }
+
+    // endregion
+
+    // region service
+
+    /** 阻塞等待 UDP 报文 */
+    operator fun invoke() = receiver()
+
+    /** 阻塞等待 TCP 连接 */
+    fun accept() = server()
+
+    // endregion
+
+    // region function
 
     /** 请求自证存在性 */
     fun yell() = monitor.yell()
@@ -164,19 +209,15 @@ class RemoteHub(
     fun <T> processConnection(name: String, block: (Socket) -> T) =
         longConnectionMonitor.process(name, block)
 
-    // service
-
-    /** 阻塞等待 UDP 报文 */
-    operator fun invoke() = receiver()
-
-    /** 阻塞等待 TCP 连接 */
-    fun accept() = server()
-
     /** 关闭 */
     override fun close() {
         for (component in scope.components)
             (component as? Closeable)?.close()
     }
+
+    // endregion
+
+    // endregion
 
     data class RemoteInfo(
         val name: String,

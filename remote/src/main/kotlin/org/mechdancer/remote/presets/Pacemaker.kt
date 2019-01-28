@@ -1,6 +1,7 @@
 package org.mechdancer.remote.presets
 
 import org.mechdancer.dependency.scope
+import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.resources.Group
 import org.mechdancer.remote.resources.MulticastSockets
@@ -36,8 +37,7 @@ class Pacemaker(
             setup(networks)
             setup(sockets)
             setup(broadcaster)
-            setupLogger(name ?: "Pacemaker[${UUID.randomUUID()}]", loggerSetting)
-                .info("initialized")
+            setup(ScopeLogger(name ?: "Pacemaker[${UUID.randomUUID()}]", loggerSetting))
         }
         scan()
     }

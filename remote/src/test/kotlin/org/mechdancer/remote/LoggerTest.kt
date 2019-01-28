@@ -15,8 +15,18 @@ import kotlin.concurrent.thread
 // 日志文件夹路径
 private val DefaultPath = System.getProperty("user.dir")
 
-// 日志行模板
-private val DefaultLayout = PatternLayout("[%-5p]\t%d{HH:mm:ss:SSS}\t%l\t%m%n")
+// 日志模板组件
+const val PatternHeader = "[%p]\t%d{HH:mm:ss:SSS}"
+const val Message = "%m"
+const val Stamp = "%r"
+const val Locate = "%l"
+
+/** 构造一个模式 */
+fun pattern(vararg topics: String) =
+    PatternLayout("$PatternHeader\t${topics.joinToString("\t")}%n")
+
+/** 默认模式 */
+val DefaultLayout = pattern(Message)
 
 /** 设置日志输出到控制台 */
 fun Logger.toConsole() =

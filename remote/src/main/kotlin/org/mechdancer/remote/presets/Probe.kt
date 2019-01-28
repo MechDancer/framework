@@ -1,6 +1,7 @@
 package org.mechdancer.remote.presets
 
 import org.mechdancer.dependency.scope
+import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.group.GroupMonitor
 import org.mechdancer.remote.modules.multicast.MulticastReceiver
 import org.mechdancer.remote.modules.tcpconnection.PortMonitor
@@ -38,8 +39,7 @@ class Probe(
             setup(sockets)
             setup(receiver)
 
-            setupLogger(name ?: "Probe[${UUID.randomUUID()}]", loggerSetting)
-                .info("initialized")
+            setup(ScopeLogger(name ?: "Probe[${UUID.randomUUID()}]", loggerSetting))
         }
     }
 

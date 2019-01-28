@@ -16,8 +16,13 @@ inline fun <reified C : Component> Iterable<Component>.must(): C =
     maybe() ?: throw ComponentNotExistException(C::class)
 
 /** 向动态域添加新的依赖项 */
-operator fun DynamicScope.plusAssign(Component: Component) {
-    setup(Component)
+operator fun DynamicScope.plusAssign(component: Component) {
+    setup(component)
+}
+
+/** 向动态域添加并执行一个操作 */
+inline fun <T : Component> DynamicScope.setup(component: T, block: T.() -> Unit) {
+    if (setup(component)) block(component)
 }
 
 /** 构造动态域 */
