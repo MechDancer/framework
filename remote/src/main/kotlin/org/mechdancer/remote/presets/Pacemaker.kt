@@ -2,10 +2,13 @@ package org.mechdancer.remote.presets
 
 import org.mechdancer.dependency.scope
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
+import org.mechdancer.remote.resources.Group
 import org.mechdancer.remote.resources.MulticastSockets
 import org.mechdancer.remote.resources.Networks
 import org.mechdancer.remote.resources.UdpCmd
+import org.slf4j.Logger
 import java.net.InetSocketAddress
+import java.util.*
 
 /**
  * 起搏器
@@ -18,16 +21,23 @@ import java.net.InetSocketAddress
  *
  * @param group 组播地址和端口
  */
-class Pacemaker(val group: InetSocketAddress = Default.GROUP) {
+class Pacemaker(
+    name: String? = null,
+    val group: InetSocketAddress = Default.GROUP,
+    loggerSetting: Logger.() -> Unit = Default.LOGGER_SETTING
+) {
     private val networks = Networks()
     private val sockets = MulticastSockets(group)
     private val broadcaster = MulticastBroadcaster()
 
     init {
         scope {
+            setup(Group())
             setup(networks)
             setup(sockets)
             setup(broadcaster)
+            setupLogger(name ?: "Pacemaker[${UUID.randomUUID()}]", loggerSetting)
+                .info("initialized")
         }
         scan()
     }

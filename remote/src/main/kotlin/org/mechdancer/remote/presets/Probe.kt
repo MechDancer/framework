@@ -7,18 +7,24 @@ import org.mechdancer.remote.modules.tcpconnection.PortMonitor
 import org.mechdancer.remote.resources.Addresses
 import org.mechdancer.remote.resources.Group
 import org.mechdancer.remote.resources.MulticastSockets
+import org.slf4j.Logger
 import java.net.InetSocketAddress
+import java.util.*
 
 /**
  * 探针
  *
  * @param group 组播地址和端口
  */
-class Probe(group: InetSocketAddress = Default.GROUP) {
-
+class Probe(
+    name: String? = null,
+    val group: InetSocketAddress = Default.GROUP,
+    loggerSetting: Logger.() -> Unit = Default.LOGGER_SETTING
+) {
     private val _group = Group()
     private val addresses = Addresses()
 
+    private val sockets = MulticastSockets(group)
     private val groupMonitor = GroupMonitor()
     private val receiver = MulticastReceiver()
 
@@ -29,8 +35,11 @@ class Probe(group: InetSocketAddress = Default.GROUP) {
             setup(groupMonitor)
             setup(PortMonitor())
 
-            setup(MulticastSockets(group))
+            setup(sockets)
             setup(receiver)
+
+            setupLogger(name ?: "Probe[${UUID.randomUUID()}]", loggerSetting)
+                .info("initialized")
         }
     }
 

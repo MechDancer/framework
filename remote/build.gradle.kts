@@ -10,11 +10,11 @@ dependencies {
     api(kotlin("stdlib"))
     api(kotlin("reflect"))
 
-    api("org.slf4j:slf4j-api:1.8.0-beta2")     // 日志接口层
-    api("org.slf4j:slf4j-log4j12:1.8.0-beta2") // 适配器
-    api("log4j:log4j:1.2.17")                  // 本体
-
+    api("org.slf4j:slf4j-api:1.8.0-beta2") // 日志接口层
     api(project(":dependency"))
+
+    testCompile("org.slf4j:slf4j-log4j12:1.8.0-beta2") // 适配器
+    testCompile("log4j:log4j:1.2.17")                  // 本体
 }
 
 task<Jar>("sourcesJar") {
