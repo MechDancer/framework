@@ -11,6 +11,8 @@ import java.net.DatagramPacket
 
 /**
  * 组播发布者
+ *
+ * @param size UDP 包分片长度
  */
 class MulticastBroadcaster(size: Int = 0x4000) :
     UniqueComponent<MulticastBroadcaster>(), Dependent {

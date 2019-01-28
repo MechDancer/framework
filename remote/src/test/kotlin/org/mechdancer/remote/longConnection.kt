@@ -38,7 +38,7 @@ private object Client2 {
                 println("- detected $it")
             }
         }
-        hub.openFirst { "VM" !in it.name }
+        hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
         while (!hub.connectKeeping(Server2.name));
         hub.processConnection(Server2.name) {

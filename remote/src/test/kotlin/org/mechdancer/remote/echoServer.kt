@@ -44,7 +44,7 @@ private object Client1 {
         val hub = remoteHub("kotlin client") {
             newMemberDetected { println("- detected $it") }
         }
-        hub.openFirst { "VM" !in it.name } // VMware的虚拟网卡服务似乎承接组播不正常
+        hub.openFirstNetwork() // VMware的虚拟网卡服务似乎承接组播不正常
         thread(isDaemon = true) { while (true) hub() }
         while (null == hub.connect("kotlin echo server", TcpCmd.COMMON) {
                 println("- connected")
