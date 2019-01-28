@@ -18,7 +18,7 @@ enum class Cmd(override val id: Byte) : Command { X(100) }
  */
 fun main() {
     val hub = remoteHub("sender") {
-        newMemberDetected { log("- detected $it in LAN") }
+        configLogger { toConsole() }
 
         inAddition {
             // 接收特定组播包
@@ -53,5 +53,3 @@ fun main() {
 
     readLine()
 }
-
-private fun log(info: Any?) = if (DEBUG) println(info) else Unit

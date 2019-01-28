@@ -12,13 +12,8 @@ import org.mechdancer.remote.resources.UdpCmd
 
 /**
  * 组成员的管理器
- *   发现新成员时会自动调用函数 [detected]
- *   从未出现过的成员或离线时间超过超时时间 [timeout] 的成员出现时视作新成员
  */
-class GroupMonitor(
-    private val detected: (String) -> Unit = {},
-    private val timeout: Int = Int.MAX_VALUE
-) : UniqueComponent<GroupMonitor>(), Dependent, MulticastListener {
+class GroupMonitor : UniqueComponent<GroupMonitor>(), Dependent, MulticastListener {
 
     private val manager = DependencyManager()
 
@@ -32,18 +27,13 @@ class GroupMonitor(
     /** 请求组中的成员响应，以证实存在性，要使用此功能必须依赖组播发送 */
     fun yell() {
         broadcaster!!.broadcast(UdpCmd.YELL_ASK)
-        logger?.trace("yelled")
+        logger?.debug("yelled")
     }
 
     /** 更新[node]出现时间 */
     fun detect(node: String) {
         if (node.isNotBlank()) // 只保存非匿名对象
-            update(node)
-                ?.takeUnless { System.currentTimeMillis() - it > timeout }
-            ?: run {
-                logger?.info("detect $node")
-                detected(node)
-            }
+            update(node) ?: logger?.info("detect $node")
     }
 
     override val interest = INTEREST
@@ -56,7 +46,7 @@ class GroupMonitor(
         // 回应询问
         if (cmd == UdpCmd.YELL_ASK.id && nameExist) {
             broadcaster?.broadcast(UdpCmd.YELL_ACK)
-            logger?.trace("reply yelling from $node")
+            logger?.debug("reply yelling from $node")
         }
     }
 

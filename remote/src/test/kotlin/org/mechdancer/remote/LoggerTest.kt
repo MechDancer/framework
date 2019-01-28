@@ -30,20 +30,18 @@ val DefaultLayout = pattern(Message)
 
 /** 设置日志输出到控制台 */
 fun Logger.toConsole() =
-    apply { LogManager.getLogger(name).addAppender(ConsoleAppender(DefaultLayout)) }
+    LogManager.getLogger(name).addAppender(ConsoleAppender(DefaultLayout))
 
 /** 设置日志输出到文件 */
 fun Logger.toFile(period: Int = 0x100000) =
-    apply {
-        LogManager
-            .getLogger(name)
-            .addAppender(
-                FileAppender(DefaultLayout,
-                             "$currentLogPath\\$name",
-                             false,
-                             true,
-                             period))
-    }
+    LogManager
+        .getLogger(name)
+        .addAppender(
+            FileAppender(DefaultLayout,
+                         "$currentLogPath\\$name",
+                         false,
+                         true,
+                         period))
 
 // 运行目录下创建log文件夹
 private val logPath: String by lazy {

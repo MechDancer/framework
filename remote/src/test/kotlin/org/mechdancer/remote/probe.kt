@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.concurrent.thread
 
 fun main() {
-    val probe = Probe()
+    val probe = Probe { toConsole() }
     thread { while (true) probe() }
     while (true) {
         readLine()

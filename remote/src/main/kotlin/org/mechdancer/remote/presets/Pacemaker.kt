@@ -3,7 +3,6 @@ package org.mechdancer.remote.presets
 import org.mechdancer.dependency.scope
 import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
-import org.mechdancer.remote.resources.Group
 import org.mechdancer.remote.resources.MulticastSockets
 import org.mechdancer.remote.resources.Networks
 import org.mechdancer.remote.resources.UdpCmd
@@ -33,7 +32,6 @@ class Pacemaker(
 
     init {
         scope {
-            setup(Group())
             setup(networks)
             setup(sockets)
             setup(broadcaster)

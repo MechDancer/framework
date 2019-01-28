@@ -1,6 +1,7 @@
 package org.mechdancer.remote.modules.multicast
 
 import org.mechdancer.dependency.*
+import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.group.Rule
 import org.mechdancer.remote.protocol.RemotePacket
 import org.mechdancer.remote.protocol.SimpleInputStream
@@ -35,6 +36,9 @@ class MulticastReceiver(
     // 地址管理
     private val addresses by manager.maybe<Addresses>()
 
+    // 日志器
+    private val logger by manager.maybe<ScopeLogger>()
+
     override fun sync(dependency: Component): Boolean {
         manager.sync(dependency)
         if (dependency is MulticastListener) listeners.add(dependency)
@@ -58,21 +62,21 @@ class MulticastReceiver(
             ?.find { (_, it) -> it match address }
             ?.let { (network, _) -> sockets[network] }
 
-        addresses
-            ?.set(sender, address)
+        addresses?.set(sender, address)
 
         return RemotePacket(
             sender = sender,
             command = stream.read().toByte(),
-            payload = stream.lookRest()
-        ).also { pack ->
-            listeners
-                .filter {
-                    it.interest.isEmpty()
-                    || pack.command in it.interest.map(Command::id)
-                }
-                .forEach { it process pack }
-        }
+            payload = stream.lookRest())
+            .also { logger?.debug("received $it on $address") }
+            .also { pack ->
+                listeners
+                    .filter {
+                        it.interest.isEmpty()
+                        || pack.command in it.interest.map(Command::id)
+                    }
+                    .forEach { it process pack }
+            }
     }
 
     private companion object {

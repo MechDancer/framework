@@ -18,5 +18,5 @@ class RemotePacket(
     operator fun component3() = payload
 
     override fun toString() =
-        "sender: $sender, cmd: $command, payload: byte[${payload.size}]"
+        "packet{$command, payload length = ${payload.size}} from \"$sender\""
 }

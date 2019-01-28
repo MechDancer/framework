@@ -11,7 +11,7 @@ private object Server1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub("kotlin echo server") {
-            newMemberDetected { println("- detected $it") }
+            configLogger { toConsole() }
             inAddition {
                 connectionListener { client, I ->
                     client
@@ -41,10 +41,8 @@ private object Server1 {
 private object Client1 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val hub = remoteHub("kotlin client") {
-            newMemberDetected { println("- detected $it") }
-        }
-        hub.openFirstNetwork() // VMware的虚拟网卡服务似乎承接组播不正常
+        val hub = remoteHub("kotlin client") { configLogger { toConsole() } }
+        hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
         while (null == hub.connect("kotlin echo server", TcpCmd.COMMON) {
                 println("- connected")
@@ -54,6 +52,6 @@ private object Client1 {
                     if (msg == "over") break
                     println(it.listenString())
                 }
-            });
+            }) Thread.sleep(100)
     }
 }

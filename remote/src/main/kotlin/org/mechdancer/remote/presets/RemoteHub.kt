@@ -25,7 +25,6 @@ class RemoteHub(
     group: InetSocketAddress,
     sliceSize: Int,
     loggerSetting: Logger.() -> Unit,
-    newMemberDetected: (String) -> Unit,
     additional: Iterable<Component>
 ) : Closeable {
 
@@ -36,7 +35,7 @@ class RemoteHub(
     // 组成员资源
     private val _group = Group()
     // 组成员管理
-    private val monitor = GroupMonitor(newMemberDetected)
+    private val monitor = GroupMonitor()
 
     // 网络接口资源
     private val networks = Networks()
