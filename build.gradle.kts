@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-version = "v1.1.2"
+version = "v1.2.0"
 
 task<Delete>("clean") {
     group = "build"
