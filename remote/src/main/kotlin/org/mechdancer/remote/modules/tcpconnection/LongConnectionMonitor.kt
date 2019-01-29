@@ -21,9 +21,7 @@ class LongConnectionMonitor :
 
     /** 找到与 [name] 的连接或建立新的连接 */
     fun connect(name: String) =
-        sockets.getOrSet(name) {
-            client.connect(name, TcpCmd.Blocking)
-        }
+        sockets.getOrSet(name) { client.connect(name, TcpCmd.Blocking) }
 
     /** 关闭与 [name] 的连接 */
     fun close(name: String) =

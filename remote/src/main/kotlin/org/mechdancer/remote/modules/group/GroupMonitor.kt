@@ -30,7 +30,8 @@ class GroupMonitor : UniqueComponent<GroupMonitor>(),
 
     /** 更新[node]出现时间并回复 */
     fun detect(node: String, reply: Boolean = false) {
-        if (node.isNotBlank()) // 只保存非匿名对象
+        // 只保存非匿名对象
+        if (node.isNotBlank())
             update(node) ?: logger?.info("detect $node")
         // 回应询问
         if (reply) {

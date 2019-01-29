@@ -28,20 +28,29 @@ fun pattern(vararg topics: String) =
 /** 默认模式 */
 val DefaultLayout = pattern(Message)
 
+/** 在log4j中获取日志器 */
+val Logger.underlying: org.apache.log4j.Logger
+    get() = LogManager.getLogger(name)
+
 /** 设置日志输出到控制台 */
 fun Logger.toConsole() =
-    LogManager.getLogger(name).addAppender(ConsoleAppender(DefaultLayout))
+    underlying.addAppender(ConsoleAppender(DefaultLayout))
 
 /** 设置日志输出到文件 */
 fun Logger.toFile(period: Int = 0x100000) =
-    LogManager
-        .getLogger(name)
-        .addAppender(
-            FileAppender(DefaultLayout,
-                         "$currentLogPath\\$name",
-                         false,
-                         true,
-                         period))
+    underlying.addAppender(
+        FileAppender(DefaultLayout,
+                     "$currentLogPath\\$name",
+                     false,
+                     true,
+                     period))
+
+/** 读取/设置日志级别 */
+var Logger.level
+    get() = underlying.level!!
+    set(value) {
+        underlying.level = value
+    }
 
 // 运行目录下创建log文件夹
 private val logPath: String by lazy {
