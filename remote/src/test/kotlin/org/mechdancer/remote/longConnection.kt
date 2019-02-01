@@ -1,5 +1,6 @@
 package org.mechdancer.remote
 
+import org.mechdancer.common.extension.log4j.toConsole
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.remoteHub

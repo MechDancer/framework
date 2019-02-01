@@ -1,6 +1,7 @@
 package org.mechdancer.remote.modules.tcpconnection
 
 import org.mechdancer.dependency.*
+import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.multicast.MulticastBroadcaster
 import org.mechdancer.remote.modules.multicast.MulticastListener
 import org.mechdancer.remote.protocol.RemotePacket
@@ -21,6 +22,8 @@ class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
     private val broadcast by manager.mustUnique { it: MulticastBroadcaster -> it::broadcast }
     private val addresses by manager.must<Addresses>()
 
+    private val logger by manager.must<ScopeLogger>()
+
     override fun sync(dependency: Component) = manager.sync(dependency)
 
     override val interest = INTEREST
@@ -34,8 +37,10 @@ class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
     override fun process(remotePacket: RemotePacket) {
         val (sender, _, payload) = remotePacket
 
-        if (sender.isNotBlank()) // 忽略匿名终端的地址
+        if (sender.isNotBlank()) { // 忽略匿名终端的地址
             addresses[sender] = payload(0) shl 8 or payload(1)
+            logger.info("received port from $sender")
+        }
     }
 
     private companion object {

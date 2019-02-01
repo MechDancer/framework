@@ -4,14 +4,14 @@ apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.2.1-dev-11"
+version = "0.2.1-dev-12"
 
 dependencies {
-    api(kotlin("stdlib"))
-    api(kotlin("reflect"))
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
 
-    api("org.slf4j:slf4j-api:1.8.0-beta2") // 日志接口层
-    api(project(":dependency"))
+    implementation("org.slf4j:slf4j-api:1.8.0-beta2") // 日志接口层
+    implementation(project(":dependency"))
 
     testImplementation("org.mechdancer:common-extension-log4j:v0.1.0")
 }

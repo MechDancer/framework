@@ -7,10 +7,10 @@ apply {
 version = "0.1.0-rc-3"
 
 dependencies {
-    compile(kotlin("stdlib"))
-    compile(kotlin("reflect"))
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
 
-    testCompile("junit", "junit", "4.12")
+    testImplementation("junit", "junit", "4.12")
 }
 
 task<Jar>("sourcesJar") {
