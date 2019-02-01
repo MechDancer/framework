@@ -1,4 +1,5 @@
 import com.novoda.gradle.release.PublishExtension
+import org.jetbrains.dokka.gradle.DokkaTask
 
 apply {
     plugin("com.novoda.bintray-release")
@@ -17,6 +18,12 @@ task<Jar>("sourcesJar") {
     classifier = "sources"
     from(sourceSets["main"].allSource)
 }
+
+task<DokkaTask>("website") {
+    outputFormat = "jekyll"
+    outputDirectory = "$rootDir/docs"
+}
+
 
 configure<PublishExtension> {
     userOrg = "mechdancer"

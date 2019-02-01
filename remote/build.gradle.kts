@@ -1,4 +1,5 @@
 import com.novoda.gradle.release.PublishExtension
+import org.jetbrains.dokka.gradle.DokkaTask
 
 apply {
     plugin("com.novoda.bintray-release")
@@ -10,7 +11,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
 
-    implementation("org.slf4j:slf4j-api:1.8.0-beta2") // 日志接口层
+    implementation("org.slf4j:slf4j-api:1.8.0-beta2")
     implementation(project(":dependency"))
 
     testImplementation("org.mechdancer:common-extension-log4j:v0.1.0")
@@ -20,6 +21,12 @@ task<Jar>("sourcesJar") {
     classifier = "sources"
     from(sourceSets["main"].allSource)
 }
+
+task<DokkaTask>("website") {
+    outputFormat = "jekyll"
+    outputDirectory = "$rootDir/docs"
+}
+
 
 configure<PublishExtension> {
     userOrg = "mechdancer"
