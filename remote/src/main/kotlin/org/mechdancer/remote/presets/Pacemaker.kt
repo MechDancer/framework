@@ -22,9 +22,8 @@ import java.util.*
  * @param group 组播地址和端口
  */
 class Pacemaker(
-    name: String? = null,
-    val group: InetSocketAddress = Default.GROUP,
-    loggerSetting: Logger.() -> Unit = Default.LOGGER_SETTING
+    val group: InetSocketAddress,
+    loggerSetting: (Logger.() -> Unit)?
 ) {
     private val networks = Networks()
     private val sockets = MulticastSockets(group)
@@ -35,7 +34,7 @@ class Pacemaker(
             setup(networks)
             setup(sockets)
             setup(broadcaster)
-            setup(ScopeLogger(name ?: "Pacemaker[${UUID.randomUUID()}]", loggerSetting))
+            loggerSetting?.let { setup(ScopeLogger("Pacemaker[${UUID.randomUUID()}]", it)) }
         }
         scan()
     }

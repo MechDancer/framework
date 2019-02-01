@@ -1,6 +1,6 @@
 package org.mechdancer.remote
 
-import org.mechdancer.remote.presets.RemoteDsl.Companion.remoteHub
+import org.mechdancer.remote.presets.remoteHub
 import org.mechdancer.remote.protocol.writeEnd
 import org.mechdancer.remote.resources.UdpCmd
 import java.io.ByteArrayOutputStream

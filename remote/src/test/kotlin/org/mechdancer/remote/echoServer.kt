@@ -3,7 +3,7 @@ package org.mechdancer.remote
 import org.mechdancer.remote.modules.tcpconnection.connectionListener
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
-import org.mechdancer.remote.presets.RemoteDsl.Companion.remoteHub
+import org.mechdancer.remote.presets.remoteHub
 import org.mechdancer.remote.resources.TcpCmd
 import kotlin.concurrent.thread
 

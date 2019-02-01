@@ -1,12 +1,12 @@
 package org.mechdancer.remote
 
-import org.mechdancer.remote.presets.Probe
+import org.mechdancer.remote.presets.probe
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.thread
 
 fun main() {
-    val probe = Probe { toConsole() }
+    val probe = probe()
     thread { while (true) probe() }
     while (true) {
         readLine()

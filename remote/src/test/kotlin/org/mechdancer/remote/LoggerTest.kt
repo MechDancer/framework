@@ -4,7 +4,7 @@ import org.apache.log4j.ConsoleAppender
 import org.apache.log4j.FileAppender
 import org.apache.log4j.LogManager
 import org.apache.log4j.PatternLayout
-import org.mechdancer.remote.presets.Pacemaker
+import org.mechdancer.remote.presets.pacemaker
 import org.slf4j.Logger
 import java.io.File
 import java.nio.file.Path
@@ -73,7 +73,7 @@ private val currentLogPath: Path by lazy {
 }
 
 fun main() {
-    Pacemaker {
+    pacemaker {
         toConsole()
         toFile()
     }

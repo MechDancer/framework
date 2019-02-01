@@ -24,7 +24,7 @@ class RemoteHub(
     name: String?,
     group: InetSocketAddress,
     sliceSize: Int,
-    loggerSetting: Logger.() -> Unit,
+    loggerSetting: (Logger.() -> Unit)?,
     additional: Iterable<Component>
 ) : Closeable {
 
@@ -99,7 +99,7 @@ class RemoteHub(
         this += longConnectionMonitor
 
         // 日志器
-        this += ScopeLogger(actualName, loggerSetting)
+        loggerSetting?.let { this += ScopeLogger(actualName, it) }
 
         for (dependency in additional)
             this += dependency
