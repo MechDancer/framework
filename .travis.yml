@@ -10,8 +10,17 @@ before_install:
   - chmod a+x gradlew
 
 script:
-  # 清理、生成、测试、文档
-  - ./gradlew clean dokka build
+  - ./gradlew build dokka
+  - ./gradlew jar website
+  - cd ./docs
+  - git init
+  - git config user.name "MechDancerProject"
+  - git config user.email "berberman@mechdancer.org"
+  - git add -A
+  - git commit -m "`curl -s http://whatthecommit.com/index.txt`"
+  - git remote add origin https://${GitHubTokenAll}@github.com/MechDancer/framework
+  - git checkout -b gh-pages
+  - git push origin gh-pages -f
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -27,7 +36,7 @@ deploy:
     skip_cleanup: true
     file_glob:    true
     file:         "build/libs/*"
-    api_key:      $GitHubToken
+    api_key:      $GitHubTokenAll
     on:
       tags:       true
 

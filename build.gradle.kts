@@ -21,6 +21,26 @@ task<Delete>("clean") {
     delete(rootProject.buildDir)
 }
 
+
+task<DokkaTask>("website") {
+    outputFormat = "jekyll"
+    sourceDirs =
+        rootProject.subprojects
+            .filter { it !== project }
+            .map { file("${it.projectDir}/src/main/kotlin").also { println(it) } }
+    outputDirectory = "$rootDir/docs"
+    finalizedBy("createJekyllConfig")
+}
+
+task("createJekyllConfig") {
+    group = "documentation"
+    doLast {
+        File("$rootDir/docs/_config.yml")
+            .also { it.createNewFile() }
+            .appendText("theme: jekyll-theme-hacker")
+    }
+}
+
 subprojects {
     group = "org.mechdancer"
 
