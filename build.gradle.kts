@@ -27,7 +27,7 @@ task<DokkaTask>("website") {
     sourceDirs =
         rootProject.subprojects
             .filter { it !== project }
-            .map { file("${it.projectDir}/src/main/kotlin").also { println(it) } }
+            .map { file("${it.projectDir}/src/main/kotlin") }
     outputDirectory = "$rootDir/docs"
     finalizedBy("createJekyllConfig")
 }
