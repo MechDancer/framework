@@ -1,6 +1,5 @@
 package org.mechdancer.remote
 
-import org.mechdancer.common.extension.log4j.toConsole
 import org.mechdancer.remote.modules.multicast.multicastListener
 import org.mechdancer.remote.modules.tcpconnection.connectionListener
 import org.mechdancer.remote.modules.tcpconnection.mailListener
@@ -19,7 +18,7 @@ enum class Cmd(override val id: Byte) : Command { X(100) }
  */
 fun main() {
     val hub = remoteHub("sender") {
-        configLogger { toConsole() }
+        configLogger { }
 
         inAddition {
             // 接收特定组播包

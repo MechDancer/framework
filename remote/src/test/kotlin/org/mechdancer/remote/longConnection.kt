@@ -1,6 +1,6 @@
 package org.mechdancer.remote
 
-import org.mechdancer.common.extension.log4j.toConsole
+import org.mechdancer.common.extension.log4j.loggerWrapper
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.remoteHub
@@ -12,7 +12,7 @@ private object Server2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub(name) {
-            configLogger { toConsole() }
+            configLogger { loggerWrapper { console() }(this) }
         }
         thread(isDaemon = true) { while (true) hub() }
         thread(isDaemon = true) { while (true) hub.accept() }
@@ -35,7 +35,7 @@ private object Client2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub(name) {
-            configLogger { toConsole() }
+            configLogger { loggerWrapper { console() }(this) }
         }
         hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
