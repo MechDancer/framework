@@ -11,9 +11,7 @@ private object Server2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val hub = remoteHub(name) {
-            configLogger { loggerWrapper { console() }(this) }
-        }
+        val hub = remoteHub(name) { configLogger(loggerWrapper { console() }) }
         thread(isDaemon = true) { while (true) hub() }
         thread(isDaemon = true) { while (true) hub.accept() }
         while (hub[Client2.name]?.connected != true);
@@ -34,9 +32,7 @@ private object Client2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val hub = remoteHub(name) {
-            configLogger { loggerWrapper { console() }(this) }
-        }
+        val hub = remoteHub(name) { configLogger(loggerWrapper { console() }) }
         hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
         while (!hub.connectKeeping(Server2.name));
