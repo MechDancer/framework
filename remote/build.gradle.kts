@@ -13,7 +13,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.8.0-beta2")
     implementation(project(":dependency"))
 
-    testImplementation("org.mechdancer:common-extension-log4j:v0.1.0")
+    testImplementation("org.mechdancer:common-extension-log4j:v0.1.0-1")
 }
 
 task<Jar>("sourcesJar") {
