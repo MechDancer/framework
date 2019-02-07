@@ -1,5 +1,7 @@
 package org.mechdancer.remote.modules.tcpconnection
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.group.GroupMonitor
@@ -41,9 +43,9 @@ class ConnectionServer(private val rule: Rule = Rule()) :
     }
 
     /** 打开特定 [port] 接收TCP连接 */
-    operator fun invoke(port: Int = 0) {
+    suspend operator fun invoke(port: Int = 0) {
         logger?.info("waiting for connection...")
-        val socket = servers[port]?.accept() ?: return
+        val socket = withContext(Dispatchers.IO) { servers[port]?.accept() } ?: return
         var closable = true
         try {
             val cmd = socket.listenCommand()
@@ -70,6 +72,7 @@ class ConnectionServer(private val rule: Rule = Rule()) :
         } catch (e: Exception) {
             logger?.error("an exception was caught during the connection")
         } finally {
+            @Suppress("BlockingMethodInNonBlockingContext")
             if (closable) socket.close()
         }
     }

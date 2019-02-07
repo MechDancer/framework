@@ -1,10 +1,14 @@
 package org.mechdancer.remote
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mechdancer.common.extension.log4j.toConsole
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.remoteHub
-import kotlin.concurrent.thread
+import java.util.concurrent.Executors
 
 private object Server2 {
     val name = Server2::class.java.simpleName!!
@@ -14,8 +18,14 @@ private object Server2 {
         val hub = remoteHub(name) {
             configLogger { toConsole() }
         }
-        thread(isDaemon = true) { while (true) hub() }
-        thread(isDaemon = true) { while (true) hub.accept() }
+        GlobalScope.launch {
+            withContext(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) hub.accept() } }
+            }
+            withContext(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) hub() } }
+            }
+        }
         while (hub[Client2.name]?.connected != true);
         hub.processConnection(Client2.name) {
             println("- connected")
@@ -38,7 +48,7 @@ private object Client2 {
             configLogger { toConsole() }
         }
         hub.openFirstNetwork()
-        thread(isDaemon = true) { while (true) hub() }
+        GlobalScope.launch { while (true) hub() }
         while (!hub.connectKeeping(Server2.name));
         hub.processConnection(Server2.name) {
             println("- connected")

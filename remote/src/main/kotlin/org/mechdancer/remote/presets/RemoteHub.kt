@@ -170,10 +170,10 @@ class RemoteHub(
     // region service
 
     /** 阻塞等待 UDP 报文 */
-    operator fun invoke() = receiver()
+    suspend operator fun invoke() = receiver()
 
     /** 阻塞等待 TCP 连接 */
-    fun accept() = server()
+    suspend fun accept() = server()
 
     // endregion
 

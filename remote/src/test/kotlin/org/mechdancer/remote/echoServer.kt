@@ -1,12 +1,16 @@
 package org.mechdancer.remote
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.mechdancer.common.extension.log4j.toConsole
 import org.mechdancer.remote.modules.tcpconnection.connectionListener
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.remoteHub
 import org.mechdancer.remote.resources.TcpCmd
-import kotlin.concurrent.thread
+import java.util.concurrent.Executors
 
 private object Server1 {
     @JvmStatic
@@ -33,8 +37,14 @@ private object Server1 {
         }
 
         // 允许同时接收 3 个客户端连接
-        repeat(3) { thread { while (true) hub.accept() } }
-        while (true) hub()
+        runBlocking {
+            launch(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) hub.accept() } }
+            }
+            launch(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) hub() } }
+            }
+        }
     }
 }
 
@@ -43,7 +53,7 @@ private object Client1 {
     fun main(args: Array<String>) {
         val hub = remoteHub("kotlin client") { configLogger { toConsole() } }
         hub.openFirstNetwork()
-        thread(isDaemon = true) { while (true) hub() }
+        GlobalScope.launch { while (true) hub() }
         while (null == hub.connect("kotlin echo server", TcpCmd.COMMON) {
                 while (true) {
                     val msg = readLine()!!
@@ -51,6 +61,6 @@ private object Client1 {
                     if (msg == "over") break
                     println(it.listenString())
                 }
-            }) Thread.sleep(100)
+            }) Thread.sleep(300)
     }
 }

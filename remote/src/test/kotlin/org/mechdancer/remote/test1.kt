@@ -1,5 +1,9 @@
 package org.mechdancer.remote
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mechdancer.common.extension.log4j.toConsole
 import org.mechdancer.remote.modules.multicast.multicastListener
 import org.mechdancer.remote.modules.tcpconnection.connectionListener
@@ -8,7 +12,7 @@ import org.mechdancer.remote.modules.tcpconnection.say
 import org.mechdancer.remote.presets.remoteHub
 import org.mechdancer.remote.resources.Command
 import org.mechdancer.remote.resources.TcpCmd
-import kotlin.concurrent.thread
+import java.util.concurrent.Executors
 
 const val DEBUG = true
 
@@ -44,8 +48,14 @@ fun main() {
 
     }.apply {
         openAllNetworks() // 发/先上线 的要打开，收/后上线 的不用
-        thread { while (true) invoke() }
-        thread { while (true) accept() }
+        GlobalScope.launch {
+            withContext(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) accept() } }
+            }
+            withContext(Executors.newSingleThreadExecutor().asCoroutineDispatcher()) {
+                repeat(3) { launch { while (true) invoke() } }
+            }
+        }
     }
 
     hub.connect("receiver", TcpCmd.Mail) { it say ("hello".toByteArray()) }

@@ -1,13 +1,14 @@
 package org.mechdancer.remote
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.mechdancer.remote.presets.probe
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.thread
 
 fun main() {
     val probe = probe()
-    thread { while (true) probe() }
+    GlobalScope.launch { while (true) probe() }
     while (true) {
         readLine()
         println(format(System.currentTimeMillis()))

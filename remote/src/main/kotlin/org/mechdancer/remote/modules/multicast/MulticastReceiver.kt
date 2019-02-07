@@ -1,5 +1,7 @@
 package org.mechdancer.remote.modules.multicast
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.mechdancer.dependency.*
 import org.mechdancer.remote.modules.ScopeLogger
 import org.mechdancer.remote.modules.group.GroupMonitor
@@ -48,17 +50,23 @@ class MulticastReceiver(
         return false
     }
 
-    operator fun invoke(): RemotePacket? {
+    suspend operator fun invoke(): RemotePacket? {
         logger?.debug("waiting for multicast packet...")
-        val packet = buffer
-            .getOrSet { DatagramPacket(ByteArray(bufferSize), bufferSize) }
-            .apply(sockets.default::receive)
+
+        val packet = withContext(Dispatchers.IO) {
+            buffer
+                .getOrSet { DatagramPacket(ByteArray(bufferSize), bufferSize) }
+                .apply(sockets.default::receive)
+        }
 
         val stream = SimpleInputStream(core = packet.data, end = packet.length)
         val sender = stream.readEnd()
 
+        logger?.debug("received from $sender")
+
         if (sender == name || rule decline sender) return null
 
+        @Suppress("BlockingMethodInNonBlockingContext")
         val command = stream.read().toByte()
         val address = packet.address as Inet4Address
         // 更新组成员信息
@@ -72,7 +80,7 @@ class MulticastReceiver(
             ?.let { (network, _) -> sockets[network] }
 
         return RemotePacket(sender, command, stream.lookRest())
-            .also { logger?.debug("received $it on $address") }
+            .also { logger?.debug("process $it on $address") }
             .also { pack ->
                 listeners
                     .asSequence()

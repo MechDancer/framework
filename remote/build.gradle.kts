@@ -10,6 +10,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
 
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.1.1")
+
     implementation("org.slf4j:slf4j-api:1.8.0-beta2")
     implementation(project(":dependency"))
 

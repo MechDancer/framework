@@ -50,5 +50,5 @@ class Probe(
     operator fun get(timeout: Int) = _group[timeout]
     operator fun get(name: String) = _group[name] to addresses[name]
 
-    operator fun invoke() = receiver.invoke()
+    suspend operator fun invoke() = receiver.invoke()
 }
