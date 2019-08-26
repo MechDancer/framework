@@ -16,6 +16,7 @@ enum class Cmd(override val id: Byte) : Command { X(100) }
 /**
  * 构造并启用收发特定指令的终端
  */
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 fun main() {
     val hub = remoteHub("sender") {
         configLogger { }

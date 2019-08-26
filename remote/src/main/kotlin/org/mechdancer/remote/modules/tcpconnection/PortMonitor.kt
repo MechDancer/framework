@@ -22,7 +22,7 @@ class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
     private val broadcast by manager.mustUnique { it: MulticastBroadcaster -> it::broadcast }
     private val addresses by manager.must<Addresses>()
 
-    private val logger by manager.must<ScopeLogger>()
+    private val logger by manager.maybe<ScopeLogger>()
 
     override fun sync(dependency: Component) = manager.sync(dependency)
 
@@ -39,7 +39,7 @@ class PortMonitor : UniqueComponent<PortMonitor>(PortMonitor::class),
 
         if (sender.isNotBlank()) { // 忽略匿名终端的地址
             addresses[sender] = payload(0) shl 8 or payload(1)
-            logger.info("received port from $sender")
+            logger?.info("received port from $sender")
         }
     }
 

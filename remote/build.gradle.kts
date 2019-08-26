@@ -4,23 +4,20 @@ apply {
     plugin("com.novoda.bintray-release")
 }
 
-version = "0.2.1-dev-12"
+version = "0.2.1-dev-13"
 
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
 
-    implementation("org.slf4j:slf4j-api:1.8.0-beta2")
+    implementation("org.slf4j", "slf4j-api", "+")
     implementation(project(":dependency"))
-
-    testImplementation("org.mechdancer:common-extension-log4j:v0.1.0-1")
 }
 
 task<Jar>("sourcesJar") {
-    classifier = "sources"
+    archiveClassifier.set("sources")
     from(sourceSets["main"].allSource)
 }
-
 
 configure<PublishExtension> {
     userOrg = "mechdancer"

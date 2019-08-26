@@ -24,7 +24,7 @@ class PortBroadcaster : UniqueComponent<PortBroadcaster>(),
     private val broadcast by manager.mustUnique { x: MulticastBroadcaster -> x::broadcast }
     private val port by manager.mustUnique { x: ServerSockets -> x.default.localPort }
 
-    private val logger by manager.must<ScopeLogger>()
+    private val logger by manager.maybe<ScopeLogger>()
 
     override fun sync(dependency: Component) = manager.sync(dependency)
 
@@ -33,7 +33,7 @@ class PortBroadcaster : UniqueComponent<PortBroadcaster>(),
     override fun process(remotePacket: RemotePacket) {
         if (remotePacket.payload.isEmpty() || String(remotePacket.payload) == name) {
             broadcast(UdpCmd.ADDRESS_ACK, byteArrayOf((port shr 8).toByte(), port.toByte()))
-            logger.debug("reply port asking from ${remotePacket.sender}")
+            logger?.debug("reply port asking from ${remotePacket.sender}")
         }
     }
 

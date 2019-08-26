@@ -68,7 +68,7 @@ subprojects {
 
     task<Jar>("javadocJar") {
         group = "build"
-        classifier = "javadoc"
+        archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
     }
 

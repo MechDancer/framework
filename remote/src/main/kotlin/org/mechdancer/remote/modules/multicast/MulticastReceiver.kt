@@ -62,7 +62,7 @@ class MulticastReceiver(
         val command = stream.read().toByte()
         val address = packet.address as Inet4Address
         // 更新组成员信息
-        groupMonitor?.detect(sender, name.isNotBlank() && command == UdpCmd.ADDRESS_ASK.id)
+        groupMonitor?.detect(sender, name.isNotBlank() && command == UdpCmd.YELL_ASK.id)
         // 更新地址认识
         addresses?.set(sender, address)
         // 打开对应网络

@@ -1,6 +1,5 @@
 package org.mechdancer.remote
 
-import org.mechdancer.common.extension.log4j.loggerWrapper
 import org.mechdancer.remote.modules.tcpconnection.connectionListener
 import org.mechdancer.remote.modules.tcpconnection.listenString
 import org.mechdancer.remote.modules.tcpconnection.say
@@ -12,7 +11,6 @@ private object Server1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val hub = remoteHub("kotlin echo server") {
-            configLogger(loggerWrapper { console() })
             inAddition {
                 connectionListener { client, I ->
                     client
@@ -41,7 +39,7 @@ private object Server1 {
 private object Client1 {
     @JvmStatic
     fun main(args: Array<String>) {
-        val hub = remoteHub("kotlin client") { configLogger(loggerWrapper { console() }) }
+        val hub = remoteHub("kotlin client")
         hub.openFirstNetwork()
         thread(isDaemon = true) { while (true) hub() }
         while (null == hub.connect("kotlin echo server", TcpCmd.COMMON) {
