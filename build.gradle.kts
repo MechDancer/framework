@@ -1,28 +1,21 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.17")
-        classpath("com.novoda:bintray-release:+")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20")
-    }
+plugins {
+    kotlin("jvm") version "1.3.50" apply (false)
+    id("org.jetbrains.dokka") version "0.9.18" apply (false)
+    id("com.jfrog.bintray") version "1.8.4" apply (false)
+    `build-scan`
 }
 
 version = "v1.2.0"
 
-task<Delete>("clean") {
+tasks.register<Delete>("clean") {
     group = "build"
     delete(rootProject.buildDir)
 }
 
-
-task<DokkaTask>("website") {
+tasks.register<DokkaTask>("website") {
     outputFormat = "jekyll"
     sourceDirs =
         rootProject.subprojects
@@ -32,7 +25,7 @@ task<DokkaTask>("website") {
     finalizedBy("createJekyllConfig")
 }
 
-task("createJekyllConfig") {
+tasks.register("createJekyllConfig") {
     group = "documentation"
     doLast {
         File("$rootDir/docs/_config.yml")
@@ -43,7 +36,6 @@ task("createJekyllConfig") {
 
 subprojects {
     group = "org.mechdancer"
-
     repositories {
         mavenCentral()
         jcenter()
@@ -53,6 +45,7 @@ subprojects {
         plugin("org.jetbrains.dokka")
         plugin("kotlin")
         plugin("java")
+        plugin("com.jfrog.bintray")
     }
 
     tasks.withType<KotlinCompile> {
@@ -66,17 +59,19 @@ subprojects {
         targetCompatibility = "1.8"
     }
 
-    task<Jar>("javadocJar") {
+    tasks.register<Jar>("javadocJar") {
         group = "build"
         archiveClassifier.set("javadoc")
         from("$buildDir/javadoc")
+        dependsOn("dokka")
     }
 
-    task<Copy>("copyArtifacts") {
+    tasks.register<Copy>("copyArtifacts") {
         group = "build"
         from("$buildDir/libs")
         into("${rootProject.buildDir}/libs")
     }
+
 
     tasks.withType<DokkaTask> {
         outputFormat = "javadoc"
