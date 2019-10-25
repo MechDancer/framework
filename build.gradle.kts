@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.50" apply (false)
-    id("org.jetbrains.dokka") version "0.9.18" apply (false)
+    id("org.jetbrains.dokka") version "0.10.0"
     id("com.jfrog.bintray") version "1.8.4" apply (false)
     `build-scan`
 }
@@ -17,11 +17,9 @@ tasks.register<Delete>("clean") {
 
 tasks.register<DokkaTask>("website") {
     outputFormat = "jekyll"
-    sourceDirs =
-        rootProject.subprojects
-            .filter { it !== project }
-            .map { file("${it.projectDir}/src/main/kotlin") }
+    subProjects = rootProject.subprojects.map { it.name }
     outputDirectory = "$rootDir/docs"
+    dependsOn(tasks.dokka)
     finalizedBy("createJekyllConfig")
 }
 
