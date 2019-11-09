@@ -1,0 +1,28 @@
+$dokka.format:jekyll
+$dokka.linkExtension:html
+$dokka.location:org.mechdancer.dependency$firstGenericType(kotlin.reflect.KClass((kotlin.Any)), kotlin.reflect.KClass((kotlin.Any)))org.mechdancer.dependency/kotlin.reflect.-k-class/first-generic-type.html
+$dokka.location:org.mechdancer.dependency$get(kotlin.collections.Iterable((org.mechdancer.dependency.Component)))org.mechdancer.dependency/kotlin.collections.-iterable/get.html
+$dokka.location:org.mechdancer.dependency$maybe(kotlin.collections.Iterable((org.mechdancer.dependency.Component)))org.mechdancer.dependency/kotlin.collections.-iterable/maybe.html
+$dokka.location:org.mechdancer.dependency$must(kotlin.collections.Iterable((org.mechdancer.dependency.Component)))org.mechdancer.dependency/kotlin.collections.-iterable/must.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$listen(java.net.Socket)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/listen.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$listenCommand(java.net.Socket)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/listen-command.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$listenString(java.net.Socket)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/listen-string.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$say(java.net.Socket, kotlin.ByteArray)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/say.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$say(java.net.Socket, kotlin.String)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/say.html
+$dokka.location:org.mechdancer.remote.modules.tcpconnection$say(java.net.Socket, org.mechdancer.remote.resources.Command)org.mechdancer.remote.modules.tcpconnection/java.net.-socket/say.html
+$dokka.location:org.mechdancer.remote.protocol$readEnd(java.io.InputStream)org.mechdancer.remote.protocol/java.io.-input-stream/read-end.html
+$dokka.location:org.mechdancer.remote.protocol$readWithLength(java.io.InputStream)org.mechdancer.remote.protocol/java.io.-input-stream/read-with-length.html
+$dokka.location:org.mechdancer.remote.protocol$waitNBytes(java.io.InputStream, kotlin.Int)org.mechdancer.remote.protocol/java.io.-input-stream/wait-n-bytes.html
+$dokka.location:org.mechdancer.remote.protocol$writeEnd(java.io.OutputStream, kotlin.String)org.mechdancer.remote.protocol/java.io.-output-stream/write-end.html
+$dokka.location:org.mechdancer.remote.protocol$writeWithLength(java.io.OutputStream, kotlin.ByteArray)org.mechdancer.remote.protocol/java.io.-output-stream/write-with-length.html
+$dokka.location:org.mechdancer.remote.protocol$zigzag(java.io.InputStream, kotlin.Boolean)org.mechdancer.remote.protocol/java.io.-input-stream/zigzag.html
+$dokka.location:org.mechdancer.remote.protocol$zigzag(kotlin.ByteArray, kotlin.Boolean)org.mechdancer.remote.protocol/kotlin.-byte-array/zigzag.html
+$dokka.location:org.mechdancer.remote.protocol$zigzag(kotlin.Long, kotlin.Boolean)org.mechdancer.remote.protocol/kotlin.-long/zigzag.html
+org.mechdancer.dependency
+org.mechdancer.remote.modules
+org.mechdancer.remote.modules.group
+org.mechdancer.remote.modules.multicast
+org.mechdancer.remote.modules.tcpconnection
+org.mechdancer.remote.presets
+org.mechdancer.remote.protocol
+org.mechdancer.remote.resources
